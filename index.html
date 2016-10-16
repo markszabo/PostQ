@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <title>PostQ</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Ubuntu">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.0/jquery.scrollTo.min.js"></script>
+  <script src="postq.js"></script>
+</head>
+<body onload="pageLoaded()">
+  <div class="row">
+    <div class="col-sm-2">
+      <div class="container-fluid">
+        <nav>
+          <ul class="nav nav-pills nav-stacked">
+            <li>
+              <select id="user">
+                <option value="user1">User1</option>
+                <option value="user2">User2</option>
+                <option value="user3">User3</option>
+              </select>
+            </li>
+            <li><a href="#friends"><span class="glyphicon glyphicon-tasks"></span> All friends</a></li>
+            <li><a href="#user1"><span class="glyphicon glyphicon-user"></span> User1</a></li>
+            <li><a href="#user2"><span class="glyphicon glyphicon-user"></span> User2</a></li>
+            <li><a href="#user3"><span class="glyphicon glyphicon-user"></span> User3</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+    <div class="nopad col-sm-10">
+      <div class="nopad container-fluid">
+        <div class="nopad pre-scrollable" id="messages">
+           <div class="msgFromMe">message</div>
+           <div class="msgToMe">message</div>
+           <div class="msgFromMe">message</div>
+           <div class="msgToMe">message</div>
+           <div class="msgFromMe">message</div>
+           <div class="msgToMe">message</div>
+           <div class="msgFromMe">message</div>
+           <div class="msgToMe">message</div>
+           <div class="msgFromMe">message</div>
+        </div>
+        <div id="textarea">
+          <textarea id="newmsg" rows="4" cols="50" onkeydown="if(event.keyCode == 13) return false;" onkeyup="if(event.keyCode == 13) send();"></textarea> 
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="container-fluid text-center">
+    <center>Copyright <span class="glyphicon glyphicon-copyright-mark"></span> PostQ</center>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,41 @@
+body {
+  font: 18px "Ubuntu", sans-serif;
+  line-height: 1.8;
+  background: #FAFFFD;
+  color: #342E37;
+}
+
+p {
+  font-size: 16px; 
+  text-align: justify;
+}
+
+.sidebar {
+  background: #3C91E6;
+  color: #FAFFFD;
+}
+
+.nopad {
+  padding-right: 0px;
+}
+
+.msgFromMe {
+  margin-left: 10% !important;
+  background-color: #9FD356;
+}
+
+.msgToMe {
+  margin-right: 10% !important;
+  background-color: #c0c6bc;
+}
+
+.msgFromMe, .msgToMe {
+  padding: 5px;
+  margin: 10px;
+  border-radius: 10px;  
+}
+
+footer {background-color: #FA824C !important;}
+/*footer a {color: #46876D;}
+footer a:hover {color: #286B50;} 
+3C91E6*/
