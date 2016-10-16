@@ -7,24 +7,46 @@
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Ubuntu">
+  <!-- Basic external JS -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <!-- Additional external JS -->
   <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.0/jquery.scrollTo.min.js"></script>
+  <script src="https://raw.githubusercontent.com/ricmoo/scrypt-js/master/scrypt.js" type="text/javascript"></script>
+    <!-- Dependencies of scrypt-->
+      <script src="https://raw.githubusercontent.com/ricmoo/scrypt-js/master/thirdparty/setImmediate.js" type="text/javascript"></script>
+      <script src="https://raw.githubusercontent.com/ricmoo/scrypt-js/master/thirdparty/buffer.js" type="text/javascript"></script>
+      <script src="https://raw.githubusercontent.com/ricmoo/scrypt-js/master/thirdparty/unorm.js" type="text/javascript"></script>
+  <!-- Custom JS -->
   <script src="postq.js"></script>
+  <script src="signin.js"></script>
 </head>
 <body onload="pageLoaded()">
+
+ <div id="signin" class="container">
+  <div class="form-signin">
+    <h2 class="form-signin-heading">Please sign in</h2>
+    <label for="inputEmail" class="sr-only">Email address</label>
+    <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" value="remember-me"> Remember me
+      </label>
+    </div>
+    <button class="btn btn-lg btn-success btn-block" onclick="signin()">Sign in</button>
+    <button class="btn btn-lg btn-warning btn-block" onclick="register()">Register</button>
+  </div>
+ </div> <!-- /container -->
+
+
+ <div id="main">
   <div class="row">
     <div class="col-sm-2">
       <div class="container-fluid">
         <nav>
           <ul class="nav nav-pills nav-stacked">
-            <li>
-              <select id="user">
-                <option value="user1">User1</option>
-                <option value="user2">User2</option>
-                <option value="user3">User3</option>
-              </select>
-            </li>
             <li><a href="#friends"><span class="glyphicon glyphicon-tasks"></span> All friends</a></li>
             <li><a href="#user1"><span class="glyphicon glyphicon-user"></span> User1</a></li>
             <li><a href="#user2"><span class="glyphicon glyphicon-user"></span> User2</a></li>
@@ -52,6 +74,7 @@
       </div>
     </div>
   </div>
+ </div> <!-- #main -->
   <footer class="container-fluid text-center">
     <center>Copyright <span class="glyphicon glyphicon-copyright-mark"></span> PostQ</center>
   </footer>
