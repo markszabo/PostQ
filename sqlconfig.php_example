@@ -1,0 +1,7 @@
+<?php
+//change it according to your settings and rename the file to sqlconfig.php
+$sqlservername = "localhost";
+$sqlusername = "username";
+$sqlpassword = "password";
+$sqldbname = "postq";
+?>

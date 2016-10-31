@@ -47,7 +47,17 @@ body {
   border-top-right-radius: 0;
 }
 
+.progress {
+  margin-top:10px;
+  display:none;
+}
+
+#incorrect {
+  display:none;
+}
+
 /*END signin form */
+
 
 #main {
   display:none;
