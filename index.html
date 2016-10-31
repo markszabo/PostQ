@@ -17,9 +17,17 @@
       <script src="https://raw.githubusercontent.com/ricmoo/scrypt-js/master/thirdparty/setImmediate.js" type="text/javascript"></script>
       <script src="https://raw.githubusercontent.com/ricmoo/scrypt-js/master/thirdparty/buffer.js" type="text/javascript"></script>
       <script src="https://raw.githubusercontent.com/ricmoo/scrypt-js/master/thirdparty/unorm.js" type="text/javascript"></script>
+  <script src="https://raw.githubusercontent.com/ricmoo/aes-js/master/index.js" type="text/javascript"></script>
+  <script src="https://raw.githubusercontent.com/jprichardson/secure-random/master/lib/secure-random.js" type="text/javascript"></script>
+  <script src="https://raw.githubusercontent.com/evanplaice/jquery-csv/master/src/jquery.csv.min.js" type="text/javascript"></script>
   <!-- Custom JS -->
-  <script src="postq.js"></script>
-  <script src="signin.js"></script>
+  <script src="postq.js" type="text/javascript"></script>
+  <script src="ntru.js" type="text/javascript"></script>
+  <script src="signin.js" type="text/javascript"></script>
+  <script src="addFriend.js" type="text/javascript"></script>
+  <script src="handleFriendRequests.js" type="text/javascript"></script>
+  <script src="getFriendList.js" type="text/javascript"></script>
+  <script src="show.js" type="text/javascript"></script>
 </head>
 <body onload="pageLoaded()">
 
@@ -30,9 +38,9 @@
       Alerts will be here
     </div>
     <label for="inputEmail" class="sr-only">Email address</label>
-    <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+    <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus value="test@test.com">
     <label for="inputPassword" class="sr-only">Password</label>
-    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required value="testtest">
     <div class="checkbox">
       <label>
         <input type="checkbox" value="remember-me"> Remember me
@@ -51,40 +59,41 @@
 
  <div id="main">
   <div class="row">
-    <div class="col-sm-2">
+    <div class="col-sm-3">
       <div class="container-fluid">
         <nav>
-          <ul class="nav nav-pills nav-stacked">
-            <li><a href="#friends"><span class="glyphicon glyphicon-tasks"></span> All friends</a></li>
-            <li><a href="#user1"><span class="glyphicon glyphicon-user"></span> User1</a></li>
-            <li><a href="#user2"><span class="glyphicon glyphicon-user"></span> User2</a></li>
-            <li><a href="#user3"><span class="glyphicon glyphicon-user"></span> User3</a></li>
+          <ul class="nav nav-pills nav-stacked" id="menu">
+            <li><a href="javascript:showAddNewFriend()"><span class="glyphicon glyphicon-plus"></span> New friend</a></li>
+            
           </ul>
         </nav>
       </div>
     </div>
-    <div class="nopad col-sm-10">
-      <div class="nopad container-fluid">
-        <div class="nopad pre-scrollable" id="messages">
-           <div class="msgFromMe">message</div>
-           <div class="msgToMe">message</div>
-           <div class="msgFromMe">message</div>
-           <div class="msgToMe">message</div>
-           <div class="msgFromMe">message</div>
-           <div class="msgToMe">message</div>
-           <div class="msgFromMe">message</div>
-           <div class="msgToMe">message</div>
-           <div class="msgFromMe">message</div>
+    <div class="col-sm-9">
+      <div class="container-fluid" id="addnewfriend">
+        <h2 class="form-signin-heading">Add a new friend</h2>
+        <div id="alertNewFriend" class="alert alert-danger">
+          Alerts will be here
+        </div>
+        <label for="inputFriendEmail" class="sr-only">Friend's email address</label>
+        <input type="email" id="inputFriendEmail" class="form-control" placeholder="Email address" required value="test2@test.com">
+        <button class="btn btn-lg btn-success btn-block" onclick="addFriend()">Add friend</button>
+      </div> <!-- addnewfriend -->
+      
+      
+      <div class="container-fluid" id="messagesouter">
+        <div class="pre-scrollable" id="messages">
+
         </div>
         <div id="textarea">
           <textarea id="newmsg" rows="4" cols="50" onkeydown="if(event.keyCode == 13) return false;" onkeyup="if(event.keyCode == 13) send();"></textarea> 
         </div>
-      </div>
-    </div>
-  </div>
+      </div> <!-- container-fluid -->
+    </div> <!-- .col-sm-10 -->
+  </div> <!-- .row -->
  </div> <!-- #main -->
   <footer class="container-fluid text-center">
-    <center>Copyright <span class="glyphicon glyphicon-copyright-mark"></span> PostQ</center>
+     Copyright <span class="glyphicon glyphicon-copyright-mark"></span> PostQ
   </footer>
 </body>
 </html>

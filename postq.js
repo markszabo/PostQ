@@ -5,6 +5,15 @@ function pageLoaded() {
 function send() {
   var msg = $('#newmsg').val();
   $('#newmsg').val(''); //cleare the message box
-  $('#messages').append('<div class="msgFromMe">' + msg + '</div>');
-  $('#messages').scrollTo("max",500);
+  
+  var encMsg = AESencrypt(msg,msgSymKey);
+  $.get("sendMsg.php?username=" + inputEmail + "&password=" + authenticationkey + "&user2Id=" + user2Id + "&msg=" + encMsg, 
+  function(data, status){
+    if(data == 1) { //if success, display message
+      $('#messages').append('<div class="msgFromMe">' + msg + '</div>');
+      $('#messages').scrollTo("max",500);
+    } else {
+      //TODO display error
+    }
+  });
 }

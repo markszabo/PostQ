@@ -52,7 +52,7 @@ body {
   display:none;
 }
 
-#incorrect {
+.alert {
   display:none;
 }
 
@@ -60,6 +60,11 @@ body {
 
 
 #main {
+  display:none;
+  width: 95%;
+}
+
+#messagesouter {
   display:none;
 }
 
