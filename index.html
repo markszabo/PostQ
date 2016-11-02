@@ -58,18 +58,32 @@
 
 
  <div id="main">
-  <div class="row">
+  <div class="row height100">
     <div class="col-sm-3">
       <div class="container-fluid">
-        <nav>
-          <ul class="nav nav-pills nav-stacked" id="menu">
-            <li><a href="javascript:showAddNewFriend()"><span class="glyphicon glyphicon-plus"></span> New friend</a></li>
-            
-          </ul>
+        <nav class="navbar navbar-default" role="navigation">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#">PostQ</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+        
+              <ul class="nav navbar-nav" id="menu">
+                <li id="menuAddnewfriend" class="active"><a href="javascript:showAddNewFriend()"><span class="glyphicon glyphicon-plus"></span> New friend</a></li>
+                
+              </ul>
+            </div><!--/.nav-collapse -->
+          </div><!--/.container-fluid -->
         </nav>
       </div>
     </div>
-    <div class="col-sm-9">
+    <div class="col-sm-9" id="messageouterouter">
       <div class="container-fluid" id="addnewfriend">
         <h2 class="form-signin-heading">Add a new friend</h2>
         <div id="alertNewFriend" class="alert alert-danger">
@@ -81,17 +95,18 @@
       </div> <!-- addnewfriend -->
       
       
-      <div class="container-fluid" id="messagesouter">
-        <div class="pre-scrollable" id="messages">
+      <div class="container-fluid height100" id="messagesouter">
+        <div class="pre-scrollable height100" id="messages">
 
         </div>
         <div id="textarea">
-          <textarea id="newmsg" rows="4" cols="50" onkeydown="if(event.keyCode == 13) return false;" onkeyup="if(event.keyCode == 13) send();"></textarea> 
+          <textarea class="form-control" id="newmsg" rows="4" onkeydown="if(event.keyCode == 13) return false;" onkeyup="if(event.keyCode == 13) send();"></textarea> 
         </div>
       </div> <!-- container-fluid -->
     </div> <!-- .col-sm-10 -->
   </div> <!-- .row -->
  </div> <!-- #main -->
+ 
   <footer class="container-fluid text-center">
      Copyright <span class="glyphicon glyphicon-copyright-mark"></span> PostQ
   </footer>

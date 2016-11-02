@@ -1,6 +1,7 @@
 function showAddNewFriend() {
   $('#messagesouter').hide();
   $('#addnewfriend').show();
+  markSelected("menuAddnewfriend");
 }
 
 var user2Id;
@@ -16,6 +17,7 @@ function showMessages(username, userid, symkey) {
   
   $.get("getMessages.php?username=" + inputEmail + "&password=" + authenticationkey + "&user2Id=" + user2Id, 
   function(data, status){
+    $('#messages').empty(); //clear previous messages
     var messages = data.split("\n");
     for(var i=0; i<messages.length; i++) {
       if(messages[i] != "") {
@@ -31,5 +33,18 @@ function showMessages(username, userid, symkey) {
     $('#addnewfriend').hide();
     $('#messagesouter').show();
     $('#messages').scrollTo("max");
+    markSelected("menuMsgs"+userid);
   });
 }
+
+function markSelected(id) {
+  $("li").removeClass("active");
+  $("#"+id).addClass("active");
+}
+
+//solve the navbar remaining open on mobile after click https://github.com/twbs/bootstrap/issues/12852#issuecomment-39746001
+$(document).on('click','.navbar-collapse.in',function(e) {
+    if( $(e.target).is('a') ) {
+        $(this).collapse('hide');
+    }
+});

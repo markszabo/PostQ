@@ -19,6 +19,7 @@ function prepareInput() {
 }
 
 function signin() {
+  updateInterface(0);
   prepareInput();
   $('.progress').show();
   scrypt(password, salt, N, r, p, dkLen, function(error, progress, hash) {
@@ -54,6 +55,7 @@ function signin() {
 }
 
 function register() {
+  updateInterface(0);
   prepareInput();
   $('.progress').show();
   scrypt(password, salt, N, r, p, dkLen, function(error, progress, hash) {

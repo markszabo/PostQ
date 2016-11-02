@@ -1,8 +1,13 @@
+html {
+  height: 100%;
+}
+
 body {
   font: 18px "Ubuntu", sans-serif;
   line-height: 1.8;
   background: #FAFFFD;
   color: #342E37;
+  height: 100%;
 }
 
 /* BEGIN signin form*/
@@ -10,6 +15,7 @@ body {
   padding-top: 40px;
   padding-bottom: 40px;
   background-color: #eee;
+  height: calc(100% - 32px);
 }
 
 .form-signin {
@@ -62,6 +68,23 @@ body {
 #main {
   display:none;
   width: 95%;
+  height: calc(100% - 32px);
+}
+
+@media (min-width: 768px) {
+  #messageouterouter {
+    height: 99%;
+  }
+}
+
+@media (max-width: 767px) {
+  #messageouterouter {
+    height: calc(100% - 170px);
+  }
+}
+
+.height100 {
+  height: 100%;
 }
 
 #messagesouter {
@@ -78,10 +101,6 @@ p {
   color: #FAFFFD;
 }
 
-.nopad {
-  padding-right: 0px;
-}
-
 .msgFromMe {
   margin-left: 10% !important;
   background-color: #9FD356;
@@ -96,6 +115,13 @@ p {
   padding: 5px;
   margin: 10px;
   border-radius: 10px;  
+}
+
+textarea {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 footer {background-color: #FA824C !important;}
