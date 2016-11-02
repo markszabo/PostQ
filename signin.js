@@ -19,8 +19,12 @@ function prepareInput() {
 }
 
 function signin() {
-  updateInterface(0);
+  hideLoginAlert();
   prepareInput();
+  if(inputEmail == "" || inputPassword == "") {
+    displayLoginAlert("danger","Username and password must be set.");
+    return;
+  }
   $('.progress').show();
   scrypt(password, salt, N, r, p, dkLen, function(error, progress, hash) {
     if (error) {
@@ -42,10 +46,9 @@ function signin() {
             console.log(privatekey);
             
             handleFriendRequests();
-            getFriendList();
+            generateMenu();
           } else {
-            $('#incorrect').text(data);
-            $('#incorrect').show(500);
+            displayLoginAlert("danger",data);
           }
       });
     } else {
@@ -55,8 +58,12 @@ function signin() {
 }
 
 function register() {
-  updateInterface(0);
+  hideLoginAlert();
   prepareInput();
+  if(inputEmail == "" || inputPassword == "") {
+    displayLoginAlert("danger","Username and password must be set.");
+    return;
+  }
   $('.progress').show();
   scrypt(password, salt, N, r, p, dkLen, function(error, progress, hash) {
     if (error) {
@@ -68,8 +75,13 @@ function register() {
       console.log(decryptionkey);
       console.log(authenticationkey);
       keys = generateNTRUKeys(decryptionkey);
-      $.get("register.php?username=" + inputEmail + "&password=" + authenticationkey + "&privatekey=" + keys[0] + "&publickey=" + keys[1], function(data, status){
-          alert("Data: " + data + "\nStatus: " + status);
+      $.get("register.php?username=" + inputEmail + "&password=" + authenticationkey + "&privatekey=" + keys[0] + "&publickey=" + keys[1],
+      function(data, status){
+        if(data == "1") { //success
+          displayLoginAlert("success","Registration successfull, you can login now.");
+        } else {
+          displayLoginAlert("danger",data);
+        }
       });
     } else {
       updateInterface(progress);
@@ -77,9 +89,27 @@ function register() {
   });
 }
 
+function displayLoginAlert(type, text) {
+  displayAlert('#loginalert', type, text);
+}
+function hideLoginAlert() {
+  $('#loginalert').hide(500);
+}
+function displayAlert(divid, type, text) {
+  $(divid).hide();
+  $(divid).empty();
+  $(divid).html('<div class="alert alert-' + type + '"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> ' + text + '</div>');
+  $(divid).show(500);
+}
+
 function updateInterface(progress) {
   $('#scryptprogress').width(progress*100+"%");
   $('#scryptprogress').attr("aria-valuenow",progress);
+  if(progress == 1) {
+    $('.progress').hide();
+    $('#scryptprogress').width(0);
+    $('#scryptprogress').attr("aria-valuenow",0);
+  }
 }
 
 function AESencrypt(text, key) {

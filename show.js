@@ -1,4 +1,5 @@
 function showAddNewFriend() {
+  clearTimeout(messageUpdateTimer);
   $('#messagesouter').hide();
   $('#addnewfriend').show();
   markSelected("menuAddnewfriend");
@@ -6,8 +7,12 @@ function showAddNewFriend() {
 
 var user2Id;
 var msgSymKey;
+var messageUpdateTimer;
+var messageTimeout = 5; //in second
 
 function showMessages(username, userid, symkey) {
+  clearTimeout(messageUpdateTimer); //otherwise problem with switching between chats
+  
   user2Id = userid;
   
   //decrypt symmetric key
@@ -34,6 +39,7 @@ function showMessages(username, userid, symkey) {
     $('#messagesouter').show();
     $('#messages').scrollTo("max");
     markSelected("menuMsgs"+userid);
+    messageUpdateTimer = setTimeout(function(){showMessages(username, userid, symkey);}, messageTimeout*1000);
   });
 }
 

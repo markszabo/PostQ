@@ -13,6 +13,7 @@ function handleFriendRequests() {
       $.get("acceptRequest.php?username=" + inputEmail + "&password=" + authenticationkey + "&friendId=" + requests[i][1] + "&symkeyforme=" + AESSymKey,
       function(data, status){
         console.log("acceptRequest.php returns: " + data);
+        generateMenu();
       });
     }
   });

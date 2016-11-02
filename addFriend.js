@@ -5,8 +5,7 @@ function addFriend() {
   //get the public key of the given friend
   $.get("getPublicKey.php?user=" + friend, function(data, status){
     if(data.startsWith("Error")) {
-      $('#alertNewFriend').text(data); //display the error
-      $('#alertNewFriend').show(500);
+      displayAlert("#alertNewFriend","danger",data);
     } else { //no error
       var publicKeyOfFriend = data;
       var plainkey = secureRandom(16);
@@ -16,10 +15,14 @@ function addFriend() {
 
       $.get("addFriend.php?username=" + inputEmail + "&password=" + authenticationkey + "&friend=" + friend + "&symkeyforme=" + symkeyforme + "&symkeyforfriend=" + symkeyforfriend,
         function(data, status){
-        //TODO show error or success
+          if(data == "1") { //success
+            displayAlert("#alertNewFriend","success","Friend added successfully!");
+          } else {
+            displayAlert("#alertNewFriend","danger",data);
+          }
           console.log("addFriend.php returned: " + data);
+          generateMenu();
         });
-
     }
   });      
 }

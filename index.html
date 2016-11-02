@@ -33,12 +33,10 @@
 
  <div id="signin" class="container">
   <div class="form-signin">
-    <h2 class="form-signin-heading">Please sign in</h2>
-    <div id="incorrect" class="alert alert-danger">
-      Alerts will be here
-    </div>
-    <label for="inputEmail" class="sr-only">Email address</label>
-    <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus value="test@test.com">
+    <h2 class="form-signin-heading">Sign in or register</h2>
+    <div id="loginalert"></div>
+    <label for="inputEmail" class="sr-only">Username</label>
+    <input type="text" id="inputEmail" class="form-control" placeholder="Username" required autofocus value="test@test.com">
     <label for="inputPassword" class="sr-only">Password</label>
     <input type="password" id="inputPassword" class="form-control" placeholder="Password" required value="testtest">
     <div class="checkbox">
@@ -62,20 +60,19 @@
     <div class="col-sm-3">
       <div class="container-fluid">
         <nav class="navbar navbar-default" role="navigation">
-          <div class="container-fluid">
-            <div class="navbar-header">
+          <div class="container-fluid" id="menuheader">
+            <div class="navbar-header width100">
               <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="#">PostQ</a>
+              <span class="navbar-brand" id="menubrand">PostQ</span>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
         
-              <ul class="nav navbar-nav" id="menu">
-                <li id="menuAddnewfriend" class="active"><a href="javascript:showAddNewFriend()"><span class="glyphicon glyphicon-plus"></span> New friend</a></li>
+              <ul class="nav navbar-nav width100" id="menu">
                 
               </ul>
             </div><!--/.nav-collapse -->
@@ -86,9 +83,7 @@
     <div class="col-sm-9" id="messageouterouter">
       <div class="container-fluid" id="addnewfriend">
         <h2 class="form-signin-heading">Add a new friend</h2>
-        <div id="alertNewFriend" class="alert alert-danger">
-          Alerts will be here
-        </div>
+        <div id="alertNewFriend"></div>
         <label for="inputFriendEmail" class="sr-only">Friend's email address</label>
         <input type="email" id="inputFriendEmail" class="form-control" placeholder="Email address" required value="test2@test.com">
         <button class="btn btn-lg btn-success btn-block" onclick="addFriend()">Add friend</button>
