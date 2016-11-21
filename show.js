@@ -1,6 +1,7 @@
 function showAddNewFriend() {
   clearTimeout(messageUpdateTimer);
   $('#messagesouter').hide();
+  $('.msgtitle').text('Add new friend');
   $('#addnewfriend').show();
   markSelected("menuAddnewfriend");
 }
@@ -36,6 +37,7 @@ function showMessages(username, userid, symkey) {
       }
     }
     $('#addnewfriend').hide();
+    $('.msgtitle').text(username);
     $('#messagesouter').show();
     $('#messages').scrollTo("max");
     markSelected("menuMsgs"+userid);

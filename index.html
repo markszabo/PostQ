@@ -20,6 +20,7 @@
   <script src="https://raw.githubusercontent.com/ricmoo/aes-js/master/index.js" type="text/javascript"></script>
   <script src="https://raw.githubusercontent.com/jprichardson/secure-random/master/lib/secure-random.js" type="text/javascript"></script>
   <script src="https://raw.githubusercontent.com/evanplaice/jquery-csv/master/src/jquery.csv.min.js" type="text/javascript"></script>
+  <script src="polynomial.js" type="text/javascript"></script>
   <!-- Custom JS -->
   <script src="postq.js" type="text/javascript"></script>
   <script src="ntru.js" type="text/javascript"></script>
@@ -59,7 +60,7 @@
   <div class="row height100">
     <div class="col-sm-3">
       <div class="container-fluid">
-        <nav class="navbar navbar-default" role="navigation">
+        <nav class="navbar navbar-default navbar-absolute" role="navigation">
           <div class="container-fluid" id="menuheader">
             <div class="navbar-header width100">
               <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -68,7 +69,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <span class="navbar-brand" id="menubrand">PostQ</span>
+              <span class="navbar-brand msgtitle" id="menubrand">PostQ</span>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
         
@@ -81,11 +82,12 @@
       </div>
     </div>
     <div class="col-sm-9" id="messageouterouter">
+      <h2 class="msgtitle" id="messagetitle">Add new friend</h2>
       <div class="container-fluid" id="addnewfriend">
-        <h2 class="form-signin-heading">Add a new friend</h2>
+        <br>
         <div id="alertNewFriend"></div>
-        <label for="inputFriendEmail" class="sr-only">Friend's email address</label>
-        <input type="email" id="inputFriendEmail" class="form-control" placeholder="Email address" required value="test2@test.com">
+        <label for="inputFriendEmail" class="sr-only">Friend's username</label>
+        <input type="email" id="inputFriendEmail" class="form-control" placeholder="Friend's username" required value="test2@test.com">
         <button class="btn btn-lg btn-success btn-block" onclick="addFriend()">Add friend</button>
       </div> <!-- addnewfriend -->
       

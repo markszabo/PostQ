@@ -120,7 +120,7 @@ function AESencrypt(text, key) {
 }
 
 function AESdecrypt(ciphertext, key) {
-  var encryptedBytes = atob(ciphertext).split("").map(function(c) { return c.charCodeAt(0); });
+  var encryptedBytes = atob(decodeURIComponent(ciphertext)).split("").map(function(c) { return c.charCodeAt(0); }); //decodeURIComponent was added later. Remove if causes problems
   var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5));
   var decryptedBytes = aesCtr.decrypt(encryptedBytes);
   return aesjs.util.convertBytesToString(decryptedBytes);

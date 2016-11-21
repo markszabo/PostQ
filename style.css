@@ -75,7 +75,22 @@ body {
 
 @media (max-width: 767px) {
   #messageouterouter {
+    margin-top:50px;
     height: calc(100% - 170px);
+  }
+  .navbar-absolute {
+    position: absolute;
+    margin: 0;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    padding-left: 15px;
+    bottom: 0px;
+    z-index:100;
+  }
+  #menu {
+    margin-top:0px;
+    background:#FFF;
   }
 }
 
@@ -96,22 +111,38 @@ p {
   text-align: justify;
 }
 
-#menuheader {
-  background: #FFF;
-  border-bottom: 5px solid;
+@media (min-width: 768px) {
+  #messagetitle {
+    padding:15px;
+    /*prevent multiline, add ... http://stackoverflow.com/a/12913510*/
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  #menubrand {
+    display:none;
+  }
 }
 
-#menubrand {
-  padding-left:45px;
-  width: calc(100% - 65px);
+@media  (max-width: 767px) {
+  #messagetitle {
+    display:none;
+  }
+  #menubrand {
+    padding-left:45px;
+    width: calc(100% - 65px);
+    /*prevent multiline, add ... http://stackoverflow.com/a/12913510*/
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
-
 .sidebar {
   background: #3C91E6;
   color: #FAFFFD;
 }
 
-li, menubrand {
+li {
   width: 100%;
   /*prevent multiline, add ... http://stackoverflow.com/a/12913510*/
   overflow: hidden; 

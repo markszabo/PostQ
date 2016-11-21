@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <title>PostQ</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Ubuntu">
+  <!-- Basic external JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <!-- Additional external JS -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.0/jquery.scrollTo.min.js"></script>
+  <script src="https://raw.githubusercontent.com/ricmoo/scrypt-js/master/scrypt.js" type="text/javascript"></script>
+    <!-- Dependencies of scrypt-->
+      <script src="https://raw.githubusercontent.com/ricmoo/scrypt-js/master/thirdparty/setImmediate.js" type="text/javascript"></script>
+      <script src="https://raw.githubusercontent.com/ricmoo/scrypt-js/master/thirdparty/buffer.js" type="text/javascript"></script>
+      <script src="https://raw.githubusercontent.com/ricmoo/scrypt-js/master/thirdparty/unorm.js" type="text/javascript"></script>
+  <script src="https://raw.githubusercontent.com/ricmoo/aes-js/master/index.js" type="text/javascript"></script>
+  <script src="https://raw.githubusercontent.com/jprichardson/secure-random/master/lib/secure-random.js" type="text/javascript"></script>
+  <script src="https://raw.githubusercontent.com/evanplaice/jquery-csv/master/src/jquery.csv.min.js" type="text/javascript"></script>
+  <script src="polynomial.js" type="text/javascript"></script>
+  <!-- Custom JS -->
+  <script src="postq.js" type="text/javascript"></script>
+  <script src="ntru.js" type="text/javascript"></script>
+  <script src="signin.js" type="text/javascript"></script>
+  <script src="addFriend.js" type="text/javascript"></script>
+  <script src="handleFriendRequests.js" type="text/javascript"></script>
+  <script src="getFriendList.js" type="text/javascript"></script>
+  <script src="show.js" type="text/javascript"></script>
+</head>
+<script type="text/javascript">
+var privatekey;
+var publickey;
+
+function runTests() {
+  polytest();
+  
+  //prepare();
+  //test1();
+}
+
+function polytest() {
+  Polynomial.setField("Z2");
+  var a = new Polynomial("2-x+3x^2");
+  var b = new Polynomial("1+2x-x^2");
+  if(a.add(b).toString() != new Polynomial("1+x").toString())
+    logToScreen("Polytest 1 failed!");
+  
+  Polynomial.setField("Z11");
+  var a = new Polynomial("2-x+3x^2");
+  var b = new Polynomial("1+2x-x^2");
+  if(a.add(b).toString() != new Polynomial("3+x+2x^2").toString())
+    logToScreen("Polytest 2 failed!");
+  
+  Polynomial.setField("Z503/x^3-1");
+  var a = new Polynomial("2-x+3x^2");
+  var b = new Polynomial("1+2x-x^2");
+  if(a.add(b).toString() != new Polynomial("3+x+2x^2").toString())
+    logToScreen("Polytest 3.1 failed!");
+  if(a.mul(b).toString() != new Polynomial("9-x^2").add("0").toString()) //add('0') is needed to clac the mod (to remove the negative sign)
+    logToScreen("Polytest 3.2 failed!");
+  
+  Polynomial.setField("Z503/x^7-1");
+  var a = new Polynomial("3+2x^2-3x^4+x^6");
+  var b = new Polynomial("1-3x+x^2+2x^5-x^6");
+  if(a.add(b).toString() != new Polynomial("4-3x+3x^2-3x^4+2x^5").add("0").toString())
+    logToScreen("Polytest 4.1 failed!");
+  if(a.mul(b).toString() != new Polynomial("4-10x-x^2-3x^3+x^4+14x^5-5x^6").add("0").toString()) //add('0') is needed to clac the mod (to remove the negative sign)
+    logToScreen("Polytest 4.2 failed!");
+  
+  Polynomial.setField("Z11");
+  if(polyModInverse(new Polynomial("3+2x^2-3x^4+x^6"), new Polynomial("x^7-1")).toString() != new Polynomial("-2+4x+2x^2+4x^3-4x^4+2x^5-2x^6").add("0").toString())
+    logToScreen("Polytest 5 failed!");
+  
+  Polynomial.setField("Z3");  
+  if(polyModInverse(new Polynomial("-1+x+x^2-x^4+x^6+x^9-x^10"), new Polynomial("x^11-1")).toString() != new Polynomial("2x^9+x^8+2x^7+x^5+2x^4+2x^3+2x+1").add("0").toString())
+    logToScreen("Polytest 6 failed!");
+
+  Polynomial.setField("Z3");  
+  if(polyModInverse(new Polynomial("x^2+1"), new Polynomial("x^3+2x+1")).toString() != new Polynomial("2x^2+x+2").add("0").toString())
+    logToScreen("Polytest 7 failed!");
+    
+  Polynomial.setField("Z32");  
+  if(polyModInverse(new Polynomial("-1+x+x^2-x^4+x^6+x^9-x^10"), new Polynomial("x^11-1")).toString() != new Polynomial("5+9x+6x^2+16x^3+4x^4+15x^5+16x^6+22x^7+20x^8+18x^9+30x^10").add("0").toString())
+    logToScreen("Polytest 8 failed!");    
+    
+}
+
+function prepare() {
+  logToScreen("<h2>Prepare started</h2>");
+  var decryptionkey = secureRandom(16); //originally the first 16 character of the hash of the password, but it will do here
+  var keys = generateNTRUKeys(decryptionkey);
+  var encprivate = keys[0];
+  privatekey = AESdecrypt(encprivate, decryptionkey)
+  publickey = keys[1]; 
+  logToScreen("The following keys are generated:");
+  logToScreen("Decryptionkey: " + decryptionkey.toString());
+  logToScreen("Encrypted privatekey: " + encprivate);
+  logToScreen("Decrypted privatekey: " + privatekey);
+  logToScreen("Publickey: " + publickey);
+}
+
+function test1() {
+  logToScreen("<h2>Test1 started</h2>");
+  var text = randomString(10);
+  var cipher = NTRUEncrypt(text, publickey);
+  var plain = NTRUDecrypt(cipher, privatekey);
+  logToScreen("Original text: " + text);
+  logToScreen("Cipher text: " + cipher);
+  logToScreen("Decrypted cipher: " + plain);
+  if(plain != text) {
+    logToScreen("<b>Test failed!</b>")
+  } else {
+    logToScreen("Test passed.")
+  } 
+}
+
+function logToScreen(text) {
+  $('body').append(text + "<br>");
+}
+function randomString(length) {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for( var i=0; i < length; i++ )
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
+</script>
+<body onload="runTests()">
+
+
+</body>
+</html>
