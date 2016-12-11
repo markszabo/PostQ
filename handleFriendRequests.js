@@ -6,7 +6,7 @@ function handleFriendRequests() {
     var requests = $.csv.toArrays(data);
     for(var i = 0; i < requests.length; i++) {
       //NTRU decrypt
-      var plainSymKey = NTRUDecrypt(requests[i][2], privatekey);
+      var plainSymKey = NTRUDecapsulate(requests[i][2], privatekey);
       //AES encrypt the symkey
       var AESSymKey = AESencrypt(plainSymKey, decryptionkey);
       //send the symkey back, delete the requests

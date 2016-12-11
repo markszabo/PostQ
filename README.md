@@ -11,3 +11,4 @@ TODO:
 * [secure-random](https://github.com/jprichardson/secure-random) secure random number generator for javascript
 * [jquery-csv](https://github.com/evanplaice/jquery-csv) to parse CSV
 * [Polynomial.js](https://github.com/infusion/Polynomial.js/) to handle polynomials for NTRU - slightly modified to extend from the field Zp to the truncated polynomial ring Zp/f
+* [js-sha512](https://github.com/emn178/js-sha512) SHA-512 hash library
