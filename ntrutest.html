@@ -42,6 +42,7 @@ function runTests() {
 }
 
 function polytest() {
+  logToScreen("<h2>The test of the underlying truncated polynomial rings started</h2>");
   Polynomial.setField("Z2");
   var a = new Polynomial("2-x+3x^2");
   var b = new Polynomial("1+2x-x^2");
