@@ -18,8 +18,8 @@ function NTRUEncapsulate(NTRUpublickey) {
   var c = roundToMultipleOf3(hr);
   
   var rhash = sha512(rStr);
-  var keyConfirmation = rhash.substring(0,128);
-  var sessionKey = rhash.substring(128);
+  var keyConfirmation = rhash.substring(0,64);
+  var sessionKey = rhash.substring(64);
   
   cipher = keyConfirmation + ";" + c.toString();
   return [sessionKey, cipher];
@@ -46,8 +46,8 @@ function NTRUDecapsulate(cipher, NTRUprivatekey) {
   rStr = ebyg.toString();
   
   var rhash = sha512(rStr);
-  var keyConfirmationCalc = rhash.substring(0,128);
-  var sessionKey = rhash.substring(128);
+  var keyConfirmationCalc = rhash.substring(0,64);
+  var sessionKey = rhash.substring(64);
   if(keyConfirmationCalc == keyConfirmation)
     return sessionKey;
   else {

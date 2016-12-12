@@ -71,11 +71,16 @@ function register() {
     } else if (hash) {
       console.log("Found: " + hash);
       decryptionkey = hash.slice(0,16);
-      var authenticationkey = encodeURIComponent(btoa(String.fromCharCode.apply(null,hash.slice(16,32))));
+      var authenticationkey = btoa(String.fromCharCode.apply(null,hash.slice(16,32)));
       console.log(decryptionkey);
       console.log(authenticationkey);
       keys = generateNTRUKeys(decryptionkey);
-      $.get("register.php?username=" + inputEmail + "&password=" + authenticationkey + "&privatekey=" + keys[0] + "&publickey=" + keys[1],
+      $.post("register.php", {
+        username: inputEmail,
+        password: authenticationkey,
+        privatekey: keys[0],
+        publickey: btoa(keys[1])
+      },
       function(data, status){
         if(data == "1") { //success
           displayLoginAlert("success","Registration successfull, you can login now.");

@@ -3,6 +3,7 @@
 TODO: 
 * validate for empty inputs
 * add install script to create sql tables (phpmyadmin export)
+* NTRUPrime output hash is used as string, should be used as bytes instead
 
 ## External libraries
 * [jquery.scrollTo](https://github.com/flesler/jquery.scrollTo) to scroll down nicely for new messages	

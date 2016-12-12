@@ -9,11 +9,19 @@ function addFriend() {
     } else { //no error
       var publicKeyOfFriend = data;      
       var encaps = NTRUEncapsulate(publicKeyOfFriend);
+      console.log(encaps.toString());
+      console.log(decryptionkey);
       var plainkey = encaps[0];
       var symkeyforfriend = encaps[1];
       var symkeyforme = AESencrypt(plainkey, decryptionkey);
 
-      $.get("addFriend.php?username=" + inputEmail + "&password=" + authenticationkey + "&friend=" + friend + "&symkeyforme=" + symkeyforme + "&symkeyforfriend=" + symkeyforfriend,
+      $.post("addFriend.php", {
+        username: inputEmail, 
+        password: decodeURIComponent(authenticationkey),
+        friend: friend,
+        symkeyforme: symkeyforme, 
+        symkeyforfriend: symkeyforfriend
+        },
         function(data, status){
           if(data == "1") { //success
             displayAlert("#alertNewFriend","success","Friend added successfully!");

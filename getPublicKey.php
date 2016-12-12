@@ -9,13 +9,13 @@ $stmt = $conn->prepare("SELECT publickey FROM users WHERE username = ?");
 $stmt->bind_param("s", $_GET['user']);
 $stmt->execute();
 if ($stmt->errno)
-  return "Error during the execution of the SQL query";
+  die("Error during the execution of the SQL query");
 
 //get the result
 $stmt->bind_result($publickey);
 
 if(!$stmt->fetch())
-  return "Error - user does not exist";
+  die("Error - user does not exist");
   
-return $publickey;
+echo $publickey;
 ?>

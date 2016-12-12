@@ -20,6 +20,7 @@ function showMessages(username, userid, symkey) {
   var encryptedBytes = atob(symkey).split("").map(function(c) { return c.charCodeAt(0); });
   var aesCtr = new aesjs.ModeOfOperation.ctr(decryptionkey, new aesjs.Counter(5));
   msgSymKey = aesCtr.decrypt(encryptedBytes);
+  msgSymKey = msgSymKey.slice(0,32);
   
   $.get("getMessages.php?username=" + inputEmail + "&password=" + authenticationkey + "&user2Id=" + user2Id, 
   function(data, status){
