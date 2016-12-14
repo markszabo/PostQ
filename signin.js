@@ -118,9 +118,10 @@ function updateInterface(progress) {
 }
 
 function AESencrypt(text, key) {
-  var textBytes = aesjs.util.convertStringToBytes(text);
+  if(typeof text === 'string')
+    text = aesjs.util.convertStringToBytes(text);
   var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5));
-  var encryptedBytes = aesCtr.encrypt(textBytes);
+  var encryptedBytes = aesCtr.encrypt(text);
   return encodeURIComponent(btoa(String.fromCharCode.apply(null,encryptedBytes)));
 }
 

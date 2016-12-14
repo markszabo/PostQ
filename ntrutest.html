@@ -162,7 +162,7 @@ function keyExchange() {
   
   var sessionKey2 = NTRUDecapsulate(cipher, privatekey);
   
-  if(sessionKey1 != sessionKey2) {
+  if(!arraysEqual(sessionKey1, sessionKey2)) {
     logToScreen("<b>Test failed!</b> " + sessionKey1 + " != " + sessionKey2);
   } else {
     logToScreen("Test passed.")
@@ -180,6 +180,16 @@ function randomString(length) {
       text += possible.charAt(Math.floor(Math.random() * possible.length));
 
   return text;
+}
+function arraysEqual(arr1, arr2) { //Source: http://stackoverflow.com/a/4025958
+    if(arr1.length !== arr2.length)
+        return false;
+    for(var i = arr1.length; i--;) {
+        if(arr1[i] !== arr2[i])
+            return false;
+    }
+
+    return true;
 }
 </script>
 </head>

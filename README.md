@@ -3,7 +3,13 @@
 TODO: 
 * validate for empty inputs
 * add install script to create sql tables (phpmyadmin export)
-* NTRUPrime output hash is used as string, should be used as bytes instead
+* key generation in the background
+* store polynomials in database more effectively
+* add id to messages to prevent replay attack
+* add the ELTE comment
+* write proper documentation
+* look for TODOs in the code
+* refactor
 
 ## External libraries
 * [jquery.scrollTo](https://github.com/flesler/jquery.scrollTo) to scroll down nicely for new messages	

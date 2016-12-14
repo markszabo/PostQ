@@ -19,7 +19,8 @@ function NTRUEncapsulate(NTRUpublickey) {
   
   var rhash = sha512(rStr);
   var keyConfirmation = rhash.substring(0,64);
-  var sessionKey = rhash.substring(64);
+  var sessionKeyStr = rhash.substring(64);
+  var sessionKey = hexStr2byteArray(sessionKeyStr);
   
   cipher = keyConfirmation + ";" + c.toString();
   return [sessionKey, cipher];
@@ -47,7 +48,8 @@ function NTRUDecapsulate(cipher, NTRUprivatekey) {
   
   var rhash = sha512(rStr);
   var keyConfirmationCalc = rhash.substring(0,64);
-  var sessionKey = rhash.substring(64);
+  var sessionKeyStr = rhash.substring(64);
+  var sessionKey = hexStr2byteArray(sessionKeyStr);
   if(keyConfirmationCalc == keyConfirmation)
     return sessionKey;
   else {
@@ -184,9 +186,22 @@ function polyModInverse(poly, modulo) { //polyModInverse(new Polynomial("3+2x^2-
 
 /**
  * Returns a random integer between min (inclusive) and max (inclusive)
- * Using Math.round() will give you a non-uniform distribution!
+ * Using Math.round() would give you a non-uniform distribution!
  * Source: http://stackoverflow.com/a/1527820
  */
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+/**
+ * Converts a hexadecimal string to a byte (int) array.
+ * Eg. "12a0ff" => [0x12, 0xa0, 0xff]
+ * Based on: http://stackoverflow.com/a/10121740
+ */
+function hexStr2byteArray(str) {
+  var a = [];
+  for(var i = 0; i < str.length; i += 2) {
+    a.push(parseInt("0x" + str.substr(i, 2),16));
+  }
+  return a;
 }
