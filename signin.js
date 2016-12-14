@@ -74,22 +74,25 @@ function register() {
       var authenticationkey = btoa(String.fromCharCode.apply(null,hash.slice(16,32)));
       console.log(decryptionkey);
       console.log(authenticationkey);
-      keys = generateNTRUKeys(decryptionkey);
-      $.post("register.php", {
-        username: inputEmail,
-        password: authenticationkey,
-        privatekey: keys[0],
-        publickey: btoa(keys[1])
-      },
-      function(data, status){
-        if(data == "1") { //success
-          displayLoginAlert("success","Registration successfull, you can login now.");
-        } else {
-          displayLoginAlert("danger",data);
-        }
+      keys = generateNTRUKeys(decryptionkey, function(keys){
+        updateInterface(0.9);
+        $.post("register.php", {
+          username: inputEmail,
+          password: authenticationkey,
+          privatekey: keys[0],
+          publickey: btoa(keys[1])
+        },
+        function(data, status){
+          updateInterface(1);
+          if(data == "1") { //success
+            displayLoginAlert("success","Registration successful, you can login now.");
+          } else {
+            displayLoginAlert("danger",data);
+          }
+        });
       });
     } else {
-      updateInterface(progress);
+      updateInterface(0.8*progress); //creating the hash is the progress up to 80%, then NTRU keygen (90%) and call register.php (100%)
     }
   });
 }

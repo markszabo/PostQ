@@ -3,9 +3,9 @@
 TODO: 
 * validate for empty inputs
 * add install script to create sql tables (phpmyadmin export)
-* key generation in the background
 * store polynomials in database more effectively
 * add id to messages to prevent replay attack
+
 * add the ELTE comment
 * write proper documentation
 * look for TODOs in the code

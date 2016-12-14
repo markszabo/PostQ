@@ -59,21 +59,17 @@ function NTRUDecapsulate(cipher, NTRUprivatekey) {
   }
 }
 
-function generateNTRUKeys(deckey) {
-  var gg = genG();
-  var gStr = gg[0];
-  var gInvStr = gg[1];
-  var fStr = genF();
-  Polynomial.setField("Z"+q.toString());
-  var inv3f = polyModInverse(new Polynomial(fStr).mul(new Polynomial("3")), new Polynomial(idealStr));
-  Polynomial.setField(Rq);
-  var h = new Polynomial(gStr).mul(inv3f);
+var w; //the background thread - worker is based on http://www.w3schools.com/html/html5_webworkers.asp
 
-  var publickey = h.toString();
-  var privatekey = fStr + ";" + gInvStr;
-  
-  encryptedPrivatekey = AESencrypt(privatekey, deckey); //encrypt the privatekey
-  return [encryptedPrivatekey, publickey];
+function generateNTRUKeys(deckey, callback) {
+  w = new Worker("NTRUkeygenWorker.js");
+  w.onmessage = function(event) {
+    w.terminate();
+    var privatekey = event.data[0];
+    var publickey = event.data[1];
+    var encryptedPrivatekey = AESencrypt(privatekey, deckey); //encrypt the privatekey
+    callback([encryptedPrivatekey, publickey]);
+  };
 }
 
 function genG() {

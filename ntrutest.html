@@ -39,6 +39,9 @@ function runTests() {
   keygenTest();
   
   prepare();
+}
+
+function testKeyExchange() {
   for(var i=0; i<10; i++)
     keyExchange();
 }
@@ -143,15 +146,18 @@ function keygenTest() {
 function prepare() {
   logToScreen("<h2>Prepare started</h2>");
   var decryptionkey = secureRandom(16); //originally the first 16 character of the hash of the password, but it will do here
-  var keys = generateNTRUKeys(decryptionkey);
-  var encprivate = keys[0];
-  privatekey = AESdecrypt(encprivate, decryptionkey)
-  publickey = keys[1]; 
-  logToScreen("<b>The following keys have been generated:</b>");
-  logToScreen("<b>Decryptionkey: </b>" + decryptionkey.toString());
-  logToScreen("<b>Encrypted privatekey: </b>" + encprivate);
-  logToScreen("<b>Decrypted privatekey: </b>" + privatekey);
-  logToScreen("<b>Publickey: </b>" + publickey);
+  generateNTRUKeys(decryptionkey, function(keys) {
+    var encprivate = keys[0];
+    privatekey = AESdecrypt(encprivate, decryptionkey)
+    publickey = keys[1]; 
+    logToScreen("<b>The following keys have been generated:</b>");
+    logToScreen("<b>Decryptionkey: </b>" + decryptionkey.toString());
+    logToScreen("<b>Encrypted privatekey: </b>" + encprivate);
+    logToScreen("<b>Decrypted privatekey: </b>" + privatekey);
+    logToScreen("<b>Publickey: </b>" + publickey);
+    
+    testKeyExchange();
+  });
 }
 
 function keyExchange() {
