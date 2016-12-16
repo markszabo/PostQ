@@ -9,8 +9,6 @@ function addFriend() {
     } else { //no error
       var publicKeyOfFriend = data;      
       var encaps = NTRUEncapsulate(publicKeyOfFriend);
-      console.log(encaps.toString());
-      console.log(decryptionkey);
       var plainkey = encaps[0];
       var symkeyforfriend = encaps[1];
       var symkeyforme = AESencrypt(plainkey, decryptionkey);
@@ -28,7 +26,6 @@ function addFriend() {
           } else {
             displayAlert("#alertNewFriend","danger",data);
           }
-          console.log("addFriend.php returned: " + data);
           generateMenu();
         });
     }

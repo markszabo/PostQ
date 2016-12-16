@@ -4,7 +4,6 @@ TODO:
 * add the ELTE comment
 * write proper documentation
 * refactor
-* remove console.log()s
 
 ## External libraries
 * [jquery.scrollTo](https://github.com/flesler/jquery.scrollTo) to scroll down nicely for new messages	

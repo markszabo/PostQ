@@ -28,22 +28,16 @@ function signin() {
   $('.progress').show();
   scrypt(password, salt, N, r, p, dkLen, function(error, progress, hash) {
     if (error) {
-      console.log("Error: " + error);
+      displayLoginAlert("danger","Calculating the scrypt hash of the password failed. Try again. Detailed error: " + error.toString());
     } else if (hash) {
-      console.log("Found: " + hash);
       decryptionkey = hash.slice(0,16);
       authenticationkey = encodeURIComponent(btoa(String.fromCharCode.apply(null,hash.slice(16,32))));
-      console.log(decryptionkey);
-      console.log(authenticationkey);
       $.get("login.php?username=" + inputEmail + "&password=" + authenticationkey, 
         function(data, status){
-          console.log("Data: " + data + "\nStatus: " + status);
           if(data.substring(0,1) == '1') { //successfull login
             $('#signin').hide();
             $('#main').show();
             privatekey = AESdecrypt(data.substr(1), decryptionkey); //login.php returns '1'.privatekey_aes
-            console.log("Privatekey: ");
-            console.log(privatekey);
             
             handleFriendRequests();
             generateMenu();
@@ -67,13 +61,10 @@ function register() {
   $('.progress').show();
   scrypt(password, salt, N, r, p, dkLen, function(error, progress, hash) {
     if (error) {
-      console.log("Error: " + error);
+      displayLoginAlert("danger","Calculating the scrypt hash of the password failed. Try again. Detailed error: " + error.toString());
     } else if (hash) {
-      console.log("Found: " + hash);
       decryptionkey = hash.slice(0,16);
       var authenticationkey = btoa(String.fromCharCode.apply(null,hash.slice(16,32)));
-      console.log(decryptionkey);
-      console.log(authenticationkey);
       keys = generateNTRUKeys(decryptionkey, function(keys){
         updateInterface(0.9);
         $.post("register.php", {
@@ -129,7 +120,7 @@ function AESencrypt(text, key) {
 }
 
 function AESdecrypt(ciphertext, key) {
-  var encryptedBytes = atob(decodeURIComponent(ciphertext)).split("").map(function(c) { return c.charCodeAt(0); }); //decodeURIComponent was added later. Remove if causes problems
+  var encryptedBytes = atob(decodeURIComponent(ciphertext)).split("").map(function(c) { return c.charCodeAt(0); });
   var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5));
   var decryptedBytes = aesCtr.decrypt(encryptedBytes);
   return aesjs.util.convertBytesToString(decryptedBytes);
