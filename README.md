@@ -1,12 +1,10 @@
 # PostQ
 
 TODO: 
-* store polynomials in database more effectively
-
 * add the ELTE comment
 * write proper documentation
-* look for TODOs in the code
 * refactor
+* remove console.log()s
 
 ## External libraries
 * [jquery.scrollTo](https://github.com/flesler/jquery.scrollTo) to scroll down nicely for new messages	

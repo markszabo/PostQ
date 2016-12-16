@@ -12,10 +12,11 @@ function send() {
   $.get("sendMsg.php?username=" + inputEmail + "&password=" + authenticationkey + "&user2Id=" + user2Id + "&msg=" + encMsg, 
   function(data, status){
     if(data == 1) { //if success, display message
+      $("#alertMessages").hide(); //hide the alert
       $('#messages').append('<div class="msgFromMe">' + msg + '</div>');
       $('#messages').scrollTo("max",500);
     } else {
-      //TODO display error
+      displayAlert("#alertMessages","danger","Sending message failed. " + data);
     }
   });
 }
