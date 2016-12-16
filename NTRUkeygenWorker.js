@@ -1,4 +1,4 @@
-importScripts("ntru.js", "polynomial.js", "signin.js", "external/aes.js", "external/buffer.js", "external/unorm.js", "external/setImmediate.js");
+importScripts("ntru.js", "polynomial.js");
 
 var gg = genG();
 var gStr = gg[0];

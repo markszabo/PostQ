@@ -1,3 +1,4 @@
+//scrypt parameters
 var N = 1024, r = 80, p = 1;
 var dkLen = 32;
 
@@ -109,19 +110,4 @@ function updateInterface(progress) {
     $('#scryptprogress').width(0);
     $('#scryptprogress').attr("aria-valuenow",0);
   }
-}
-
-function AESencrypt(text, key) {
-  if(typeof text === 'string')
-    text = aesjs.util.convertStringToBytes(text);
-  var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5));
-  var encryptedBytes = aesCtr.encrypt(text);
-  return encodeURIComponent(btoa(String.fromCharCode.apply(null,encryptedBytes)));
-}
-
-function AESdecrypt(ciphertext, key) {
-  var encryptedBytes = atob(decodeURIComponent(ciphertext)).split("").map(function(c) { return c.charCodeAt(0); });
-  var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5));
-  var decryptedBytes = aesCtr.decrypt(encryptedBytes);
-  return aesjs.util.convertBytesToString(decryptedBytes);
 }
