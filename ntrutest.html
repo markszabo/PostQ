@@ -178,7 +178,8 @@ function keyExchange() {
 function logToScreen(text) {
   $('body').append(text + "<br>");
 }
-function randomString(length) {
+
+function randomString(length) { // Source: http://stackoverflow.com/a/1349426
   var text = "";
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -187,6 +188,7 @@ function randomString(length) {
 
   return text;
 }
+
 function arraysEqual(arr1, arr2) { //Source: http://stackoverflow.com/a/4025958
     if(arr1.length !== arr2.length)
         return false;

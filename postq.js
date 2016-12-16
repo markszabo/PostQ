@@ -3,10 +3,12 @@ function pageLoaded() {
 }
 
 function send() {
+  msgId++;
   var msg = $('#newmsg').val();
+  var msgWithId = msgId.toString() + ";" + msg;
   $('#newmsg').val(''); //cleare the message box
   
-  var encMsg = AESencrypt(msg,msgSymKey);
+  var encMsg = AESencrypt(msgWithId,msgSymKey);
   $.get("sendMsg.php?username=" + inputEmail + "&password=" + authenticationkey + "&user2Id=" + user2Id + "&msg=" + encMsg, 
   function(data, status){
     if(data == 1) { //if success, display message

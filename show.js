@@ -10,11 +10,15 @@ var user2Id;
 var msgSymKey;
 var messageUpdateTimer;
 var messageTimeout = 5; //in second
+var msgId;
+var msgIduser2;
 
 function showMessages(username, userid, symkey) {
   clearTimeout(messageUpdateTimer); //otherwise problem with switching between chats
   
   user2Id = userid;
+  msgId = 0;
+  msgIduser2 = 0;
   
   //decrypt symmetric key
   var encryptedBytes = atob(symkey).split("").map(function(c) { return c.charCodeAt(0); });
@@ -29,12 +33,18 @@ function showMessages(username, userid, symkey) {
     for(var i=0; i<messages.length; i++) {
       if(messages[i] != "") {
         var fromTo = messages[i].substring(0,1);
-        var msg = messages[i].substring(1);
-        decMsg = AESdecrypt(msg, msgSymKey);
-        if(fromTo == '1')
-          $('#messages').append('<div class="msgFromMe">' + decMsg + '</div>');
-        else
-          $('#messages').append('<div class="msgToMe">' + decMsg + '</div>');
+        var idAndMsg = messages[i].substring(1);
+        var decIdAndMsg = AESdecrypt(idAndMsg, msgSymKey);
+        var decIdAndMsgA = decIdAndMsg.split(";");
+        var msg = decIdAndMsgA[1];
+        var msgIdi = parseInt(decIdAndMsgA[0]);
+        if(fromTo == '1' && msgIdi > msgId) {
+          msgId = msgIdi;
+          $('#messages').append('<div class="msgFromMe">' + msg + '</div>');
+        } else if(fromTo == '0' && msgIdi > msgIduser2) {
+          msgIduser2 = msgIdi;
+          $('#messages').append('<div class="msgToMe">' + msg + '</div>');
+        }
       }
     }
     $('#addnewfriend').hide();
