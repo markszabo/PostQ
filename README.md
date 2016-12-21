@@ -1,10 +1,10 @@
-# PostQ
-
-TODO: 
+###TODO: 
 * add the ELTE comment
-* write proper documentation
-* refactor
+* finish the documentation
+* refactor (?)
 * remove the test usernames & password
+
+# PostQ
 
 This repository contains the code of PostQ: a web-based messenger application with end-to-end post-quantum encryption. This was created as a homework for the Applied Cryptography Project Seminar class at [ELTE](http://elte.hu/), Hungary by [Anna Dorottya Simon](https://github.com/annadorottya) and [Márk Szabó](https://github.com/markszabo/).
 
@@ -26,7 +26,7 @@ A webserver with php and an SQL server is needed to run PostQ.
 
 ## Attack model
 
-Our attack model is a powerful but passive attacker (eg. secret service in a democracy). The attacker can read every entry in the database and has access to the entire codebase, but can not change the code (no web-base solution can protect against those attackers).
+Our attack model is a powerful but passive attacker (eg. secret service in a democracy). The attacker can read every entry in the database and has access to the entire codebase, but cannot change the code (no web-base solution can protect against those attackers).
 
 ## The protocol
 
@@ -51,6 +51,18 @@ When the other user accepts the friend request, he will decrypt the shared key w
 To send messages a user will request the encrypted shared key, decrypt it with his encryption key and then use the shared key to encrypt messages to send, and decrypt messages he received.
 
 ![Chat](https://github.com/markszabo/postq/raw/master/img/fg_chat.png "Chat")
+
+## Details
+
+Counter in messages to prevent replay
+
+### The post-quantum algorithms
+
+#### AES for symmetric key
+
+#### NTRU Prime for public key
+
+## Future development
 
 ## External libraries
 * [jquery.scrollTo](https://github.com/flesler/jquery.scrollTo) to scroll down nicely for new messages	
