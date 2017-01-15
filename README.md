@@ -1,7 +1,6 @@
 ###TODO: 
 * finish the documentation
 * refactor (?)
-* remove the test usernames & password
 
 # PostQ
 
