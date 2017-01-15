@@ -1,7 +1,3 @@
-###TODO: 
-* finish the documentation
-* refactor (?)
-
 # PostQ
 
 This repository contains the code of PostQ: a web-based messenger application with end-to-end post-quantum encryption. This was created as a homework for the Applied Cryptography Project Seminar class at [ELTE](http://elte.hu/), Hungary by [Anna Dorottya Simon](https://github.com/annadorottya) and [Márk Szabó](https://github.com/markszabo/).
@@ -52,13 +48,23 @@ To send messages a user will request the encrypted shared key, decrypt it with h
 
 ## Details
 
-Counter in messages to prevent replay
+Public key encryption (NTRUPrime) is used to exchange a shared secret and afterwards parties use that shared secret with symmetric encryption (AES) to encrypt messages. Given the deterministic nature of AES and to prevent replay attacks a counter is perpended to every message before encryption. This makes the encryption of similar messages (like 'Hello Bob' and 'Hello Bobek') different and since it's checked by the clients, it prevents replay attacks.
 
 ### The post-quantum algorithms
 
+Our application is post-quantum, meaning that it is unbreakable even with quantum computers. It is important to start to change to post-quantum algorithms now, before the appearance of working quantum computers to prevent attacks that aim today's encrypted messages in the future.
+
+There are certain quantum algorithms that can be used to break currently used cryptographical algorithms. The most important one is [Shor's algorithm](https://en.wikipedia.org/wiki/Shor's_algorithm), which can factorize numbers composed of two primes in polynomial time. Thus, it breaks RSA, Diffie-Hellman, and any other algorithm that relies on the factorization problem.
+
+The other one is [Grover’s algorithm](https://en.wikipedia.org/wiki/Grover%27s_algorithm), which finds a black box's input in O(N^(1/2)). Effectively, it can be used to brute force keys in symmetric key cryptography algorithms, so it practically halves the security offered by the key length.
+
 #### AES for symmetric key
 
+As stated above, using quantum computers, the key length of symmetric crypography keys is halved, thus we need to use a key which is twice the length of what is considered secure in non-quantum cryptography. Other than that, AES is not broken even using quantum computers, so we decided to use AES for symmetric key cryptographic algorithm.
+
 #### NTRU Prime for public key
+
+RSA is not a post-quantum algorithm, so we had to find an other algorithm. Our first suggestion was the classic [NTRU](https://en.wikipedia.org/wiki/NTRU), which is a lattice-based public key cryptographic algorithm, developed in 1996, relying on the [Closest Vector Problem](https://en.wikipedia.org/wiki/Lattice_problem#Closest_vector_problem_.28CVP.29). However since NTRU uses rings which are not fields, there are some potential attacks against it. In May 2016, Daniel Bernstein, Tanja Lange et al released [NTRU Prime](https://ntruprime.cr.yp.to/ntruprime-20160511.pdf), which uses fields, eliminating these attacks. We decided to implement this latter version of NTRU.
 
 ## Future development
 
