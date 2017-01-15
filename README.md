@@ -1,5 +1,4 @@
 ###TODO: 
-* add the ELTE comment
 * finish the documentation
 * refactor (?)
 * remove the test usernames & password
@@ -64,11 +63,20 @@ Counter in messages to prevent replay
 
 ## Future development
 
+The following features could be implemented in the future:
+* Generate new shared secrets after some time / given number of messages
+* Implement session management with cookies to be able to stay logged in
+* Change the GET requests to POST - to prevent sensitive data appearing in logs
+* Implement 'Forgot my password' functionality and e-mail verification
+* Mix NTRU with a pre-quantum algorithm (eg. ECDH, RSA) to provide secrecy even in case NTRU turns out to be insecure
+
 ## External libraries
+
+The following external libraries were used in the project. All but the Polynomial.js are unchanged and simply downloaded to the `external` directory. Polynomial.js was extended from the field Zp to the truncated polynomial ring Zp/f and thus placed in the root directory of the project.
 * [jquery.scrollTo](https://github.com/flesler/jquery.scrollTo) to scroll down nicely for new messages	
-* [scrypt-js](https://github.com/ricmoo/scrypt-js) for client side scrypt
-* [aes-js](https://github.com/ricmoo/aes-js) for client side AES
-* [secure-random](https://github.com/jprichardson/secure-random) secure random number generator for javascript
+* [scrypt-js](https://github.com/ricmoo/scrypt-js) for client side scrypt hash generation
+* [aes-js](https://github.com/ricmoo/aes-js) for client side AES encryption
+* [secure-random](https://github.com/jprichardson/secure-random) for secure random number generation
 * [jquery-csv](https://github.com/evanplaice/jquery-csv) to parse CSV
 * [Polynomial.js](https://github.com/infusion/Polynomial.js/) to handle polynomials for NTRU - slightly modified to extend from the field Zp to the truncated polynomial ring Zp/f
-* [js-sha512](https://github.com/emn178/js-sha512) SHA-512 hash library
+* [js-sha512](https://github.com/emn178/js-sha512) for SHA-512 hash generation
