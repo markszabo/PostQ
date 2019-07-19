@@ -45,15 +45,17 @@ function signin() {
     } else if (hash) {
       decryptionkey = hash.slice(0,16);
       authenticationkey = encodeURIComponent(btoa(String.fromCharCode.apply(null,hash.slice(16,32))));
-      $.get("login.php?username=" + inputEmail + "&password=" + authenticationkey, 
+      $.get("login.php?username=" + inputEmail + "&password=" + authenticationkey,
         function(data, status){
           if(data.substring(0,1) == '1') { //successfull login
             $('#signin').hide();
             $('#main').show();
             privatekey = AESdecrypt(data.substr(1), decryptionkey); //login.php returns '1'.privatekey_aes
-            
+            document.cookie="inputEmail="+inputEmail;
+            document.cookie="authenticationkey="+authenticationkey;
+            document.cookie="decryptionkey="+decryptionkey;
             handleFriendRequests();
-            generateMenu();
+            generateMenu()
           } else {
             displayLoginAlert("danger",data);
           }

@@ -27,18 +27,18 @@ var msgIduser2;
 
 function showMessages(username, userid, symkey) {
   clearTimeout(messageUpdateTimer); //otherwise problem with switching between chats
-  
+
   user2Id = userid;
   msgId = 0;
   msgIduser2 = 0;
-  
+
   //decrypt symmetric key
   var encryptedBytes = atob(symkey).split("").map(function(c) { return c.charCodeAt(0); });
   var aesCtr = new aesjs.ModeOfOperation.ctr(decryptionkey, new aesjs.Counter(5));
   msgSymKey = aesCtr.decrypt(encryptedBytes);
   msgSymKey = msgSymKey.slice(0,32);
-  
-  $.get("getMessages.php?username=" + inputEmail + "&password=" + authenticationkey + "&user2Id=" + user2Id, 
+
+  $.get("getMessages.php?username=" + inputEmail + "&password=" + authenticationkey + "&user2Id=" + user2Id,
   function(data, status){
     $('#messages').empty(); //clear previous messages
     var messages = data.split("\n");
@@ -50,6 +50,7 @@ function showMessages(username, userid, symkey) {
         var decIdAndMsgA = decIdAndMsg.split(";");
         var msg = decIdAndMsgA[1];
         var msgIdi = parseInt(decIdAndMsgA[0]);
+        //if last msg is not signaling
         if(fromTo == '1' && msgIdi > msgId) {
           msgId = msgIdi;
           $('#messages').append('<div class="msgFromMe">' + msg + '</div>');
@@ -57,6 +58,8 @@ function showMessages(username, userid, symkey) {
           msgIduser2 = msgIdi;
           $('#messages').append('<div class="msgToMe">' + msg + '</div>');
         }
+        //else if msg is signaling
+        //redirect to call UI
       }
     }
     $('#addnewfriend').hide();
