@@ -42,6 +42,7 @@ function showMessages(username, userid, symkey) {
   function(data, status){
     $('#messages').empty(); //clear previous messages
     var messages = data.split("\n");
+    var signalingMsgs = []
     for(var i=0; i<messages.length; i++) {
       if(messages[i] != "") {
         var fromTo = messages[i].substring(0,1);
@@ -50,18 +51,30 @@ function showMessages(username, userid, symkey) {
         var decIdAndMsgA = decIdAndMsg.split(";");
         var msg = decIdAndMsgA[1];
         var msgIdi = parseInt(decIdAndMsgA[0]);
-        //if last msg is not signaling
+
         if(fromTo == '1' && msgIdi > msgId) {
           msgId = msgIdi;
           $('#messages').append('<div class="msgFromMe">' + msg + '</div>');
-        } else if(fromTo == '0' && msgIdi > msgIduser2) {
+        } else if(fromTo == '0' && msgIdi > msgIduser2){
           msgIduser2 = msgIdi;
           $('#messages').append('<div class="msgToMe">' + msg + '</div>');
+        } else if(fromTo == '0' && msgIdi == 0){
+          timestamp=parseInt(decIdAndMsg.split("&")[2])
+          if(timestamp+10000>Date.now()){
+          msg=decIdAndMsg.split("&")[1]
+          signalingMsgs.push(msg)
+          }
+
         }
-        //else if msg is signaling
-        //redirect to call UI
       }
     }
+    if (signalingMsgs.length > 2)
+    {
+      console.log(`all my params ${signalingMsgs}`)
+      onOfferRecieved(signalingMsgs)
+      //window.location="PostQ/call/call.html"
+    }
+
     $('#addnewfriend').hide();
     $('.msgtitle').text(username);
     $('#messagesouter').show();

@@ -17,6 +17,7 @@ startButton.addEventListener('click', start);
 callButton.addEventListener('click', call);
 hangupButton.addEventListener('click', hangup);
 
+
 let startTime;
 const localVideo = document.getElementById('localVideo');
 const remoteVideo = document.getElementById('remoteVideo');
@@ -128,12 +129,11 @@ function onSetSessionDescriptionError(error) {
 
 //got sdp answer
 async function onCreateAnswerSuccess(desc) {
-  console.log(`Answer from pc2:\n${desc.sdp}`);
-  console.log('pc1 setRemoteDescription start');
+  console.log(`Setting remote description to:\n${desc}`);
   try {
-    await pc1.setRemoteDescription(desc);
-    onSetRemoteSuccess(pc1);
+    await pc1.setRemoteDescription(new RTCSessionDescription(desc));
   } catch (e) {
+    console.log('failed to set the session description to \n', desc)
     onSetSessionDescriptionError(e);
   }
 }
@@ -142,10 +142,58 @@ async function onCreateAnswerSuccess(desc) {
 // only need to have "send it" in here, need a separate one for adding it
 async function onIceCandidate(pc, event) {
   try {
-    sendCallParam(peer,event.candidate) //maybe this doesnt work id
+    sendCallParam(0,event.candidate) //maybe this doesnt work id
   } catch (e) {
   }
   console.log(`${getName(pc)} ICE candidate:\n${event.candidate ? event.candidate.candidate : '(null)'}`);
+}
+
+
+///////////////// ANSWER sTUFF
+
+async function onOfferRecieved(signalingMsgs) {
+  //if you arent the initiator!!!
+  callButton.disabled = true;
+  hangupButton.disabled = false;
+  console.log('Starting call');
+  startTime = window.performance.now();
+  const videoTracks = localStream.getVideoTracks();
+  const audioTracks = localStream.getAudioTracks();
+  if (videoTracks.length > 0) {
+    console.log(`Using video device: ${videoTracks[0].label}`);
+  }
+  if (audioTracks.length > 0) {
+    console.log(`Using audio device: ${audioTracks[0].label}`);
+  }
+  const configuration = getSelectedSdpSemantics();
+  console.log('RTCPeerConnection configuration:', configuration);
+  pc1 = new RTCPeerConnection(configuration);
+  console.log('Created local peer connection object pc1');
+  pc1.addEventListener('icecandidate', e => onIceCandidate(pc1, e));
+  //pc1.addEventListener('iceconnectionstatechange', e => onIceStateChange(pc1, e));
+
+  localStream.getTracks().forEach(track => pc1.addTrack(track, localStream));
+  console.log('Added local stream to pc1');
+
+
+  var i;
+  for(i=0;i<signalingMsgs.length;i++){  //formatting broken
+    if (signalingMsgs[i].includes("offer")){
+      onCreateAnswerSuccess(JSON.parse(signalingMsgs[i]));
+    } else if (signalingMsgs[i].includes("candidate")) {//doesnt necessarily contain this
+      console.log(`CANDIDATE ADDED ${signalingMsgs[i].candidate}`)
+      pc1.addIceCandidate(JSON.parse(signalingMsgs[i])) //formatting broken
+    } else {
+      console.log(`didnt do anything ${signalingMsgs[i]}`)
+    } //or something
+  }
+  //check through list
+  //pc- set remote setLocalDescription
+  //set ices in the same loop? or after the loop idk
+  //pc generate ANSWER
+  //pc generate ices
+  //send answer and ices
+
 }
 
 
