@@ -11,9 +11,9 @@
 const startButton = document.getElementById('startButton');
 const callButton = document.getElementById('callButton');
 const hangupButton = document.getElementById('hangupButton');
-callButton.disabled = true;
+
 hangupButton.disabled = true;
-startButton.addEventListener('click', start);
+
 callButton.addEventListener('click', call);
 hangupButton.addEventListener('click', hangup);
 var initiator = false;
@@ -49,11 +49,9 @@ const offerOptions = {
   offerToReceiveVideo: 1
 };
 
-function getName(pc) {
-  return (pc === pc1) ? 'pc1' : 'pc2';
-}
 
-async function start() {
+
+async function grabMedia() {
   console.log('Requesting local stream');
   startButton.disabled = true;
   try {
@@ -67,11 +65,9 @@ async function start() {
   }
 }
 
-function getSelectedSdpSemantics() {
-  return {};
-}
 
 async function call() {
+  await grabMedia()
   initiator=true;
   callButton.disabled = true;
   hangupButton.disabled = false;
@@ -85,9 +81,8 @@ async function call() {
   if (audioTracks.length > 0) {
     console.log(`Using audio device: ${audioTracks[0].label}`);
   }
-  const configuration = getSelectedSdpSemantics();
-  console.log('RTCPeerConnection configuration:', configuration);
-  pc1 = new RTCPeerConnection(configuration);
+
+  pc1 = new RTCPeerConnection();
   console.log('Created local peer connection object pc1');
   pc1.addEventListener('icecandidate', e => onIceCandidate(pc1, e));
   //pc1.addEventListener('iceconnectionstatechange', e => onIceStateChange(pc1, e));
@@ -120,7 +115,7 @@ async function onCreateOfferSuccess(desc) {
 }
 
 //got sdp answer
-async function onCreateAnswerSuccess(desc) {
+async function sendAnswer(desc) {
   console.log(`Setting remote description to:\n${desc}`);
   try {
     await pc1.setRemoteDescription(new RTCSessionDescription(desc));
@@ -139,14 +134,12 @@ async function onIceCandidate(pc, event) {
     sendCallParam(0,event.candidate) //maybe this doesnt work id
   } catch (e) {
   }
-  console.log(`${getName(pc)} ICE candidate:\n${event.candidate ? event.candidate.candidate : '(null)'}`);
+  console.log(`ICE candidate:\n${event.candidate ? event.candidate.candidate : '(null)'}`);
 }
-
-
-///////////////// ANSWER sTUFF
 
 async function onOfferRecieved(signalingMsgs) {
   if(typeof pc1 == "undefined"){
+  await grabMedia()
   //if you arent the initiator!!!
   callButton.disabled = true;
   hangupButton.disabled = false;
@@ -160,9 +153,8 @@ async function onOfferRecieved(signalingMsgs) {
   if (audioTracks.length > 0) {
     console.log(`Using audio device: ${audioTracks[0].label}`);
   }
-  const configuration = getSelectedSdpSemantics();
-  console.log('RTCPeerConnection configuration:', configuration);
-  pc1 = new RTCPeerConnection(configuration);
+
+  pc1 = new RTCPeerConnection();
   console.log('Created local peer connection object pc1');
   pc1.addEventListener('icecandidate', e => onIceCandidate(pc1, e));
   //pc1.addEventListener('iceconnectionstatechange', e => onIceStateChange(pc1, e));
@@ -175,7 +167,7 @@ async function onOfferRecieved(signalingMsgs) {
   var i;
   for(i=0;i<signalingMsgs.length;i++){  //formatting broken
     if (signalingMsgs[i].includes("offer") ){
-      onCreateAnswerSuccess(JSON.parse(signalingMsgs[i]));
+      sendAnswer(JSON.parse(signalingMsgs[i]));
     } else if (signalingMsgs[i].includes("candidate")) {//doesnt necessarily contain this
       console.log(`CANDIDATE ADDED ${signalingMsgs[i]}`)
       pc1.addIceCandidate(JSON.parse(signalingMsgs[i])) //formatting broken

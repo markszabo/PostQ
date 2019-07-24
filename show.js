@@ -59,7 +59,8 @@ function showMessages(username, userid, symkey) {
         } else if(fromTo == '0' && msgIdi > msgIduser2){
           msgIduser2 = msgIdi;
           $('#messages').append('<div class="msgToMe">' + msg + '</div>');
-        } else if(fromTo == '0' && msgIdi == 0){
+        } //handling calls
+        else if(fromTo == '0' && msgIdi == 0){
           timestamp=parseInt(decIdAndMsg.split("&")[2])
           if(timestamp+10000>Date.now()){
           msg=decIdAndMsg.split("&")[1]
@@ -69,16 +70,15 @@ function showMessages(username, userid, symkey) {
         }
       }
     }
-    if (signalingMsgs.length > 0) //change this to 2 so that at least the offer and 2 ices were recieved
+    //if call params were recieved
+    if (signalingMsgs.length > 2)
     {
-      console.log(`all my params ${signalingMsgs}`)
       if (!initiator){
       onOfferRecieved(signalingMsgs)
     } else {
       onAnswerRecived(signalingMsgs)
     }
 
-      //window.location="PostQ/call/call.html"
     }
 
     $('#addnewfriend').hide();
