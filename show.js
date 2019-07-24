@@ -26,6 +26,7 @@ var msgId;
 var msgIduser2;
 
 function showMessages(username, userid, symkey) {
+  console.log('querying messages')
   clearTimeout(messageUpdateTimer); //otherwise problem with switching between chats
 
   user2Id = userid;
@@ -68,10 +69,15 @@ function showMessages(username, userid, symkey) {
         }
       }
     }
-    if (signalingMsgs.length > 2)
+    if (signalingMsgs.length > 0) //change this to 2 so that at least the offer and 2 ices were recieved
     {
       console.log(`all my params ${signalingMsgs}`)
+      if (!initiator){
       onOfferRecieved(signalingMsgs)
+    } else {
+      onAnswerRecived(signalingMsgs)
+    }
+
       //window.location="PostQ/call/call.html"
     }
 

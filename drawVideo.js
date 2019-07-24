@@ -16,6 +16,7 @@ hangupButton.disabled = true;
 startButton.addEventListener('click', start);
 callButton.addEventListener('click', call);
 hangupButton.addEventListener('click', hangup);
+var initiator = false;
 
 
 let startTime;
@@ -71,6 +72,7 @@ function getSelectedSdpSemantics() {
 }
 
 async function call() {
+  initiator=true;
   callButton.disabled = true;
   hangupButton.disabled = false;
   console.log('Starting call');
@@ -91,6 +93,9 @@ async function call() {
   //pc1.addEventListener('iceconnectionstatechange', e => onIceStateChange(pc1, e));
 
   localStream.getTracks().forEach(track => pc1.addTrack(track, localStream));
+
+  pc1.addEventListener('track', gotRemoteStream);
+
   console.log('Added local stream to pc1');
 
   try {
@@ -100,6 +105,7 @@ async function call() {
     } catch (e) {
     onCreateSessionDescriptionError(e);
   }
+
 }
 
 function onCreateSessionDescriptionError(error) {
@@ -132,13 +138,16 @@ async function onCreateAnswerSuccess(desc) {
   console.log(`Setting remote description to:\n${desc}`);
   try {
     await pc1.setRemoteDescription(new RTCSessionDescription(desc));
+    var answer = await pc1.createAnswer();
+    await pc1.setLocalDescription(answer);
+    sendCallParam(0,answer)
   } catch (e) {
     console.log('failed to set the session description to \n', desc)
     onSetSessionDescriptionError(e);
   }
 }
 
-//when generating a new ice candidate
+//when generating a new ice candidate4
 // only need to have "send it" in here, need a separate one for adding it
 async function onIceCandidate(pc, event) {
   try {
@@ -174,6 +183,7 @@ async function onOfferRecieved(signalingMsgs) {
 
   localStream.getTracks().forEach(track => pc1.addTrack(track, localStream));
   console.log('Added local stream to pc1');
+  pc1.addEventListener('track', gotRemoteStream);
 
 
   var i;
@@ -181,7 +191,7 @@ async function onOfferRecieved(signalingMsgs) {
     if (signalingMsgs[i].includes("offer")){
       onCreateAnswerSuccess(JSON.parse(signalingMsgs[i]));
     } else if (signalingMsgs[i].includes("candidate")) {//doesnt necessarily contain this
-      console.log(`CANDIDATE ADDED ${signalingMsgs[i].candidate}`)
+      console.log(`CANDIDATE ADDED ${signalingMsgs[i]}`)
       pc1.addIceCandidate(JSON.parse(signalingMsgs[i])) //formatting broken
     } else {
       console.log(`didnt do anything ${signalingMsgs[i]}`)
@@ -194,8 +204,30 @@ async function onOfferRecieved(signalingMsgs) {
   //pc generate ices
   //send answer and ices
 
-}
+  }
 
+  function gotRemoteStream(e) {
+    if (remoteVideo.srcObject !== e.streams[0]) {
+      remoteVideo.srcObject = e.streams[0];
+      console.log('pc2 received remote stream');
+    }
+  }
+
+
+async function onAnswerRecived(signalingMsgs) {
+  var i;
+  for(i=0;i<signalingMsgs.length;i++){  //formatting broken
+    if (signalingMsgs[i].includes("answer")){
+      console.log('answer recieved', signalingMsgs[i])
+      pc1.setRemoteDescription(new RTCSessionDescription(JSON.parse(signalingMsgs[i])))
+    } else if (signalingMsgs[i].includes("candidate")) {//doesnt necessarily contain this
+      console.log(`CANDIDATE ADDED ${signalingMsgs[i]}`)
+      pc1.addIceCandidate(JSON.parse(signalingMsgs[i])) //formatting broken
+    } else {
+       console.log(`didnt do anything ${signalingMsgs[i]}`)
+    } //or something
+  }
+}
 
 function hangup() {
   console.log('Ending call');
