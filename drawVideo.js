@@ -103,34 +103,20 @@ async function call() {
     const offer = await pc1.createOffer(offerOptions);
     await onCreateOfferSuccess(offer);
     } catch (e) {
-    onCreateSessionDescriptionError(e);
+    console.log(`Failed to create session description: ${error.toString()}`);
   }
 
-}
-
-function onCreateSessionDescriptionError(error) {
-  console.log(`Failed to create session description: ${error.toString()}`);
 }
 
 //local sdp done, send it over
 async function onCreateOfferSuccess(desc) {
   console.log(`Offer from pc1\n${desc.sdp}`);
-  console.log('pc1 setLocalDescription start');
   try {
     await pc1.setLocalDescription(desc);
-    onSetLocalSuccess(pc1);
     sendCallParam(0,desc) //maybe this doesnt work idk
   } catch (e) {
-    onSetSessionDescriptionError();
+    console.log('failed to set the session description to \n', desc)
   }
-}
-
-function onSetLocalSuccess(pc) {
-  console.log(`${getName(pc)} setLocalDescription complete`);
-}
-
-function onSetSessionDescriptionError(error) {
-  console.log(`Failed to set session description: ${error.toString()}`);
 }
 
 //got sdp answer
@@ -143,7 +129,6 @@ async function onCreateAnswerSuccess(desc) {
     sendCallParam(0,answer)
   } catch (e) {
     console.log('failed to set the session description to \n', desc)
-    onSetSessionDescriptionError(e);
   }
 }
 
@@ -161,6 +146,7 @@ async function onIceCandidate(pc, event) {
 ///////////////// ANSWER sTUFF
 
 async function onOfferRecieved(signalingMsgs) {
+  if(typeof pc1 == "undefined"){
   //if you arent the initiator!!!
   callButton.disabled = true;
   hangupButton.disabled = false;
@@ -184,11 +170,11 @@ async function onOfferRecieved(signalingMsgs) {
   localStream.getTracks().forEach(track => pc1.addTrack(track, localStream));
   console.log('Added local stream to pc1');
   pc1.addEventListener('track', gotRemoteStream);
-
+  }
 
   var i;
   for(i=0;i<signalingMsgs.length;i++){  //formatting broken
-    if (signalingMsgs[i].includes("offer")){
+    if (signalingMsgs[i].includes("offer") ){
       onCreateAnswerSuccess(JSON.parse(signalingMsgs[i]));
     } else if (signalingMsgs[i].includes("candidate")) {//doesnt necessarily contain this
       console.log(`CANDIDATE ADDED ${signalingMsgs[i]}`)
@@ -209,7 +195,7 @@ async function onOfferRecieved(signalingMsgs) {
   function gotRemoteStream(e) {
     if (remoteVideo.srcObject !== e.streams[0]) {
       remoteVideo.srcObject = e.streams[0];
-      console.log('pc2 received remote stream');
+      console.log('pc2 dreceived remote stream', e.streams);
     }
   }
 
