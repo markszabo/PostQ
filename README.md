@@ -4,7 +4,7 @@ This repository contains the code of PostQ: a web-based messenger application wi
 
 ![Login](https://github.com/markszabo/postq/raw/master/img/login.png "Login")
 
-This is a fully web-based messenger application written in JavaScript (Jquery) and php. For the interface we have used Bootstrap and on the backend the data is stored in a MySQL database. 
+This is a fully web-based messenger application written in JavaScript (Jquery) and php. For the interface we have used Bootstrap and on the backend the data is stored in a MySQL database.
 
 ![Chat](https://github.com/markszabo/postq/raw/master/img/chat.png "Chat")
 
@@ -46,6 +46,8 @@ To send messages a user will request the encrypted shared key, decrypt it with h
 
 ![Chat](https://github.com/markszabo/postq/raw/master/img/fg_chat.png "Chat")
 
+There is also a possibility for WebRTC based peer-to-peer audio+video calls. The signaling process is identical to the chat process, and uses the same backend with slightly modified messages. The video and audio is sent over DTLS+SRTP as per WebRTC standard.
+
 ## Details
 
 Public key encryption (NTRUPrime) is used to exchange a shared secret and afterwards parties use that shared secret with symmetric encryption (AES) to encrypt messages. Given the deterministic nature of AES and to prevent replay attacks a counter is perpended to every message before encryption. This makes the encryption of similar messages (like 'Hello Bob' and 'Hello Bobek') different and since it's checked by the clients, it prevents replay attacks.
@@ -78,10 +80,11 @@ The following features could be implemented in the future:
 ## External libraries
 
 The following external libraries were used in the project. All but the Polynomial.js are unchanged and simply downloaded to the `external` directory. Polynomial.js was extended from the field Zp to the truncated polynomial ring Zp/f and thus placed in the root directory of the project.
-* [jquery.scrollTo](https://github.com/flesler/jquery.scrollTo) to scroll down nicely for new messages	
+* [jquery.scrollTo](https://github.com/flesler/jquery.scrollTo) to scroll down nicely for new messages
 * [scrypt-js](https://github.com/ricmoo/scrypt-js) for client side scrypt hash generation
 * [aes-js](https://github.com/ricmoo/aes-js) for client side AES encryption
 * [secure-random](https://github.com/jprichardson/secure-random) for secure random number generation
 * [jquery-csv](https://github.com/evanplaice/jquery-csv) to parse CSV
 * [Polynomial.js](https://github.com/infusion/Polynomial.js/) to handle polynomials for NTRU - slightly modified to extend from the field Zp to the truncated polynomial ring Zp/f
 * [js-sha512](https://github.com/emn178/js-sha512) for SHA-512 hash generation
+* [adapter-js](https://webrtc.github.io/adapter/adapter-latest.js) for WebRTC compatibility
