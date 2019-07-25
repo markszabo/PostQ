@@ -1,2 +1,0 @@
-install.php redirects to index.php instead of index.html
-incorrect password
