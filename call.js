@@ -46,6 +46,7 @@ const offerOptions = {
   offerToReceiveVideo: 1
 };
 
+const configuration = {iceServers: [{urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19305']}]};
 //basically getUserMedia call
 async function grabMedia() {
   try {
@@ -78,7 +79,7 @@ async function initPC() {
   }
 
   //create pc
-  pc = new RTCPeerConnection();
+  pc = new RTCPeerConnection(configuration);
   pc.addEventListener('icecandidate', e => onIceCandidate(pc, e));
 
   //add local stram  tracks to pc
@@ -113,7 +114,6 @@ async function call() {
 async function onCreateOfferSuccess(desc) {
   try {
     await pc.setLocalDescription(desc);
-    console.log('user2 id = ',user2Id)
     sendSignal(desc)
   } catch (e) {
     console.log('failed to set the session description to \n', desc.sdp)
@@ -139,12 +139,14 @@ async function onOfferRecieved(signalingMsgs) {
 
   var i;
   for(i=0;i<signalingMsgs.length;i++){
-    console.log(signalingMsgs[i])
+
     if (signalingMsgs[i].includes("offer")  && pc.remoteDescription == null ){ // and connection status is not yet stable
       await sendAnswer(JSON.parse(signalingMsgs[i]));
     } else if (signalingMsgs[i].includes("candidate") && pc.remoteDescription !== null) { // and remote sdp is already set
+      console.log(signalingMsgs[i])//or something
       await pc.addIceCandidate(JSON.parse(signalingMsgs[i]))
-    } //or something
+    }
+
    }
   }
 
