@@ -10,6 +10,9 @@
 
 const callButton = document.getElementById('callButton');
 const hangupButton = document.getElementById('hangupButton');
+const videobox = document.getElementById('videobox');
+const msgbox = document.getElementById('messagesouter')
+
 hangupButton.disabled = true;
 callButton.addEventListener('click', call);
 hangupButton.addEventListener('click', hangup);
@@ -84,6 +87,11 @@ async function initPC() {
 
   //add local stram  tracks to pc
   localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+
+  // reorder frontend
+  videobox.style.display = "inline-block";
+  msgbox.className="container-fluid height20"
+
   pc.addEventListener('track', gotRemoteStream);
 
   pc.onconnectionstatechange = function(event) {
@@ -191,4 +199,6 @@ function hangup() {
   initiator=false;
   hangupButton.disabled = true;
   callButton.disabled = false;
+  videobox.style.display = "none";
+  msgbox.className="container-fluid height100"
 }

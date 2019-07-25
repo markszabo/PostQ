@@ -110,7 +110,10 @@
         <button class="btn btn-lg btn-success btn-block" onclick="addFriend()">Add friend</button>
       </div> <!-- addnewfriend -->
 
-
+<div id="videobox" style="display: none;">
+    <video id="localVideo" playsinline autoplay muted></video>
+    <video id="remoteVideo" playsinline autoplay></video>
+  </div>
       <div class="container-fluid height100" id="messagesouter">
         <div id="alertMessages"></div>
         <div class="pre-scrollable height100" id="messages">
@@ -122,8 +125,6 @@
         <button id="callButton">Call</button>
         <button id="hangupButton">End</button>
 
-        <video id="localVideo" playsinline autoplay muted></video>
-        <video id="remoteVideo" playsinline autoplay></video>
       </div> <!-- container-fluid -->
 
     </div> <!-- .col-sm-10 -->
