@@ -26,7 +26,6 @@ var msgId;
 var msgIduser2;
 
 function showMessages(username, userid, symkey) {
-  console.log('querying messages')
   clearTimeout(messageUpdateTimer); //otherwise problem with switching between chats
 
   user2Id = userid;

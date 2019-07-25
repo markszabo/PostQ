@@ -48,7 +48,6 @@ const offerOptions = {
 
 //basically getUserMedia call
 async function grabMedia() {
-  console.log('Requesting local stream');
   try {
     const stream = await navigator.mediaDevices.getUserMedia({audio: true, video: true});
     localVideo.srcObject = stream;
@@ -85,6 +84,14 @@ async function initPC() {
   //add local stram  tracks to pc
   localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
   pc.addEventListener('track', gotRemoteStream);
+
+  pc.onconnectionstatechange = function(event) {
+    console.log("Connection state: ", pc.connectionState)
+    if (pc.connectionState == "closed" || pc.connectionState == "failed" || pc.connectionState == "disconnected")
+    {
+      hangup();
+    }
+  }
 }
 
 // initiate a call
@@ -94,7 +101,6 @@ async function call() {
   await initPC();
 
   try {
-    console.log('pc createOffer start');
     const offer = await pc.createOffer(offerOptions);
     await onCreateOfferSuccess(offer);
     } catch (e) {
@@ -105,13 +111,12 @@ async function call() {
 
 //local sdp created, send it over
 async function onCreateOfferSuccess(desc) {
-  console.log(`Offer from pc\n${desc.sdp}`);
   try {
     await pc.setLocalDescription(desc);
     console.log('user2 id = ',user2Id)
     sendSignal(desc)
   } catch (e) {
-    console.log('failed to set the session description to \n', desc)
+    console.log('failed to set the session description to \n', desc.sdp)
   }
 }
 
@@ -120,8 +125,9 @@ async function onIceCandidate(pc, event) {
   try {
     sendSignal(event.candidate) //maybe this doesnt work id
   } catch (e) {
+    console.log(`failed to send ICE candidate:\n${event.candidate ? event.candidate.candidate : '(null)'}`);
   }
-  console.log(`ICE candidate:\n${event.candidate ? event.candidate.candidate : '(null)'}`);
+
 }
 
 
@@ -133,27 +139,24 @@ async function onOfferRecieved(signalingMsgs) {
 
   var i;
   for(i=0;i<signalingMsgs.length;i++){
-    if (signalingMsgs[i].includes("offer") ){ // and connection status is not yet stable
+    console.log(signalingMsgs[i])
+    if (signalingMsgs[i].includes("offer")  && pc.remoteDescription == null ){ // and connection status is not yet stable
       await sendAnswer(JSON.parse(signalingMsgs[i]));
-    } else if (signalingMsgs[i].includes("candidate")) { // and remote sdp is already set
-      console.log(`CANDIDATE ADDED ${signalingMsgs[i]}`)
-      pc.addIceCandidate(JSON.parse(signalingMsgs[i]))
-    } else {
-      console.log(`didnt do anything ${signalingMsgs[i]}`)
+    } else if (signalingMsgs[i].includes("candidate") && pc.remoteDescription !== null) { // and remote sdp is already set
+      await pc.addIceCandidate(JSON.parse(signalingMsgs[i]))
     } //or something
    }
   }
 
   // Set remote offer and send answer
   async function sendAnswer(desc) {
-    console.log(`Setting remote description to:\n${desc}`);
     try {
       await pc.setRemoteDescription(new RTCSessionDescription(desc));
       var answer = await pc.createAnswer();
       await pc.setLocalDescription(answer);
       sendSignal(answer)
     } catch (e) {
-      console.log('failed to set the session description to \n', desc)
+      console.log('failed to set the remote description to \n', desc.sdp)
     }
   }
 
@@ -161,7 +164,7 @@ async function onOfferRecieved(signalingMsgs) {
   function gotRemoteStream(e) {
     if (remoteVideo.srcObject !== e.streams[0]) {
       remoteVideo.srcObject = e.streams[0];
-      console.log('pc2 dreceived remote stream', e.streams);
+      console.log('received remote stream', e.streams);
     }
   }
 
@@ -169,14 +172,10 @@ async function onOfferRecieved(signalingMsgs) {
 async function onAnswerRecived(signalingMsgs) {
   var i;
   for(i=0;i<signalingMsgs.length;i++){
-    if (signalingMsgs[i].includes("answer")){ // and conn status is not yet stable
-      console.log('answer recieved', signalingMsgs[i])
-      pc.setRemoteDescription(new RTCSessionDescription(JSON.parse(signalingMsgs[i])))
-    } else if (signalingMsgs[i].includes("candidate")) { // and remote sdp is already set
-      console.log(`CANDIDATE ADDED ${signalingMsgs[i]}`)
-      pc.addIceCandidate(JSON.parse(signalingMsgs[i]))
-    } else {
-       console.log(`didnt do anything ${signalingMsgs[i]}`)
+    if (signalingMsgs[i].includes("answer") && pc.remoteDescription == null){ // and conn status is not yet stable
+      await pc.setRemoteDescription(new RTCSessionDescription(JSON.parse(signalingMsgs[i])))
+    } else if (signalingMsgs[i].includes("candidate") && pc.remoteDescription !== null) { // and remote sdp is already set
+      await pc.addIceCandidate(JSON.parse(signalingMsgs[i]))
     }
   }
 }
@@ -186,6 +185,7 @@ function hangup() {
   console.log('Ending call');
   pc.close();
   pc = null;
+  initiator=false;
   hangupButton.disabled = true;
   callButton.disabled = false;
 }

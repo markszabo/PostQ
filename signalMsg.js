@@ -6,7 +6,7 @@ function sendSignal(msg){
     $.get("sendMsg.php?username=" + inputEmail + "&password=" + authenticationkey + "&user2Id=" + user2Id + "&msg=" + encMsg,
     function(data, status){
       if(data == 1) {
-        console.log(`message sent = ${msgWithId}`);
+        //console.log(`message sent = ${msgWithId}`);
 
       } else {
         console.log(`sending message failed = ${msgWithId}`);
