@@ -8,12 +8,9 @@
 
 'use strict';
 
-const startButton = document.getElementById('startButton');
 const callButton = document.getElementById('callButton');
 const hangupButton = document.getElementById('hangupButton');
-
 hangupButton.disabled = true;
-
 callButton.addEventListener('click', call);
 hangupButton.addEventListener('click', hangup);
 var initiator = false;
@@ -43,20 +40,17 @@ remoteVideo.addEventListener('resize', () => {
 });
 
 let localStream;
-let pc1;
+let pc;
 const offerOptions = {
   offerToReceiveAudio: 1,
   offerToReceiveVideo: 1
 };
 
-
-
+//basically getUserMedia call
 async function grabMedia() {
   console.log('Requesting local stream');
-  startButton.disabled = true;
   try {
     const stream = await navigator.mediaDevices.getUserMedia({audio: true, video: true});
-    console.log('Received local stream');
     localVideo.srcObject = stream;
     localStream = stream;
     callButton.disabled = false;
@@ -65,16 +59,18 @@ async function grabMedia() {
   }
 }
 
-
-async function call() {
-  await grabMedia()
-  initiator=true;
+//create PC and add local tracks
+async function initPC() {
   callButton.disabled = true;
   hangupButton.disabled = false;
+
+  //get local media
+  await grabMedia()
   console.log('Starting call');
   startTime = window.performance.now();
   const videoTracks = localStream.getVideoTracks();
   const audioTracks = localStream.getAudioTracks();
+
   if (videoTracks.length > 0) {
     console.log(`Using video device: ${videoTracks[0].label}`);
   }
@@ -82,20 +78,24 @@ async function call() {
     console.log(`Using audio device: ${audioTracks[0].label}`);
   }
 
-  pc1 = new RTCPeerConnection();
-  console.log('Created local peer connection object pc1');
-  pc1.addEventListener('icecandidate', e => onIceCandidate(pc1, e));
-  //pc1.addEventListener('iceconnectionstatechange', e => onIceStateChange(pc1, e));
+  //create pc
+  pc = new RTCPeerConnection();
+  pc.addEventListener('icecandidate', e => onIceCandidate(pc, e));
 
-  localStream.getTracks().forEach(track => pc1.addTrack(track, localStream));
+  //add local stram  tracks to pc
+  localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+  pc.addEventListener('track', gotRemoteStream);
+}
 
-  pc1.addEventListener('track', gotRemoteStream);
+// initiate a call
+async function call() {
+  initiator=true;
 
-  console.log('Added local stream to pc1');
+  await initPC();
 
   try {
-    console.log('pc1 createOffer start');
-    const offer = await pc1.createOffer(offerOptions);
+    console.log('pc createOffer start');
+    const offer = await pc.createOffer(offerOptions);
     await onCreateOfferSuccess(offer);
     } catch (e) {
     console.log(`Failed to create session description: ${error.toString()}`);
@@ -103,87 +103,61 @@ async function call() {
 
 }
 
-//local sdp done, send it over
+//local sdp created, send it over
 async function onCreateOfferSuccess(desc) {
-  console.log(`Offer from pc1\n${desc.sdp}`);
+  console.log(`Offer from pc\n${desc.sdp}`);
   try {
-    await pc1.setLocalDescription(desc);
-    sendCallParam(0,desc) //maybe this doesnt work idk
+    await pc.setLocalDescription(desc);
+    console.log('user2 id = ',user2Id)
+    sendSignal(desc)
   } catch (e) {
     console.log('failed to set the session description to \n', desc)
   }
 }
 
-//got sdp answer
-async function sendAnswer(desc) {
-  console.log(`Setting remote description to:\n${desc}`);
-  try {
-    await pc1.setRemoteDescription(new RTCSessionDescription(desc));
-    var answer = await pc1.createAnswer();
-    await pc1.setLocalDescription(answer);
-    sendCallParam(0,answer)
-  } catch (e) {
-    console.log('failed to set the session description to \n', desc)
-  }
-}
-
-//when generating a new ice candidate4
-// only need to have "send it" in here, need a separate one for adding it
+// when generating a new ice candidate
 async function onIceCandidate(pc, event) {
   try {
-    sendCallParam(0,event.candidate) //maybe this doesnt work id
+    sendSignal(event.candidate) //maybe this doesnt work id
   } catch (e) {
   }
   console.log(`ICE candidate:\n${event.candidate ? event.candidate.candidate : '(null)'}`);
 }
 
+
 async function onOfferRecieved(signalingMsgs) {
-  if(typeof pc1 == "undefined"){
-  await grabMedia()
-  //if you arent the initiator!!!
-  callButton.disabled = true;
-  hangupButton.disabled = false;
-  console.log('Starting call');
-  startTime = window.performance.now();
-  const videoTracks = localStream.getVideoTracks();
-  const audioTracks = localStream.getAudioTracks();
-  if (videoTracks.length > 0) {
-    console.log(`Using video device: ${videoTracks[0].label}`);
-  }
-  if (audioTracks.length > 0) {
-    console.log(`Using audio device: ${audioTracks[0].label}`);
-  }
-
-  pc1 = new RTCPeerConnection();
-  console.log('Created local peer connection object pc1');
-  pc1.addEventListener('icecandidate', e => onIceCandidate(pc1, e));
-  //pc1.addEventListener('iceconnectionstatechange', e => onIceStateChange(pc1, e));
-
-  localStream.getTracks().forEach(track => pc1.addTrack(track, localStream));
-  console.log('Added local stream to pc1');
-  pc1.addEventListener('track', gotRemoteStream);
+  //only do this once per call
+  if(typeof pc == "undefined" || pc == null){
+    await initPC();
   }
 
   var i;
-  for(i=0;i<signalingMsgs.length;i++){  //formatting broken
-    if (signalingMsgs[i].includes("offer") ){
-      sendAnswer(JSON.parse(signalingMsgs[i]));
-    } else if (signalingMsgs[i].includes("candidate")) {//doesnt necessarily contain this
+  for(i=0;i<signalingMsgs.length;i++){
+    if (signalingMsgs[i].includes("offer") ){ // and connection status is not yet stable
+      await sendAnswer(JSON.parse(signalingMsgs[i]));
+    } else if (signalingMsgs[i].includes("candidate")) { // and remote sdp is already set
       console.log(`CANDIDATE ADDED ${signalingMsgs[i]}`)
-      pc1.addIceCandidate(JSON.parse(signalingMsgs[i])) //formatting broken
+      pc.addIceCandidate(JSON.parse(signalingMsgs[i]))
     } else {
       console.log(`didnt do anything ${signalingMsgs[i]}`)
     } //or something
-  }
-  //check through list
-  //pc- set remote setLocalDescription
-  //set ices in the same loop? or after the loop idk
-  //pc generate ANSWER
-  //pc generate ices
-  //send answer and ices
-
+   }
   }
 
+  // Set remote offer and send answer
+  async function sendAnswer(desc) {
+    console.log(`Setting remote description to:\n${desc}`);
+    try {
+      await pc.setRemoteDescription(new RTCSessionDescription(desc));
+      var answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+      sendSignal(answer)
+    } catch (e) {
+      console.log('failed to set the session description to \n', desc)
+    }
+  }
+
+  // when stream is recieved display it
   function gotRemoteStream(e) {
     if (remoteVideo.srcObject !== e.streams[0]) {
       remoteVideo.srcObject = e.streams[0];
@@ -191,26 +165,27 @@ async function onOfferRecieved(signalingMsgs) {
     }
   }
 
-
+// if peer sent an answer
 async function onAnswerRecived(signalingMsgs) {
   var i;
-  for(i=0;i<signalingMsgs.length;i++){  //formatting broken
-    if (signalingMsgs[i].includes("answer")){
+  for(i=0;i<signalingMsgs.length;i++){
+    if (signalingMsgs[i].includes("answer")){ // and conn status is not yet stable
       console.log('answer recieved', signalingMsgs[i])
-      pc1.setRemoteDescription(new RTCSessionDescription(JSON.parse(signalingMsgs[i])))
-    } else if (signalingMsgs[i].includes("candidate")) {//doesnt necessarily contain this
+      pc.setRemoteDescription(new RTCSessionDescription(JSON.parse(signalingMsgs[i])))
+    } else if (signalingMsgs[i].includes("candidate")) { // and remote sdp is already set
       console.log(`CANDIDATE ADDED ${signalingMsgs[i]}`)
-      pc1.addIceCandidate(JSON.parse(signalingMsgs[i])) //formatting broken
+      pc.addIceCandidate(JSON.parse(signalingMsgs[i]))
     } else {
        console.log(`didnt do anything ${signalingMsgs[i]}`)
-    } //or something
+    }
   }
 }
 
+// for ending calls
 function hangup() {
   console.log('Ending call');
-  pc1.close();
-  pc1 = null;
+  pc.close();
+  pc = null;
   hangupButton.disabled = true;
   callButton.disabled = false;
 }
