@@ -14,7 +14,7 @@ hangupButton.disabled = true;
 callButton.addEventListener('click', call);
 hangupButton.addEventListener('click', hangup);
 var initiator = false;
-
+var usedICEs = []
 
 let startTime;
 const localVideo = document.getElementById('localVideo');
@@ -123,7 +123,7 @@ async function onCreateOfferSuccess(desc) {
 // when generating a new ice candidate
 async function onIceCandidate(pc, event) {
   try {
-    sendSignal(event.candidate) //maybe this doesnt work id
+    sendSignal(event.candidate)
   } catch (e) {
     console.log(`failed to send ICE candidate:\n${event.candidate ? event.candidate.candidate : '(null)'}`);
   }
@@ -140,10 +140,10 @@ async function onOfferRecieved(signalingMsgs) {
   var i;
   for(i=0;i<signalingMsgs.length;i++){
 
-    if (signalingMsgs[i].includes("offer")  && pc.remoteDescription == null ){ // and connection status is not yet stable
+    if (signalingMsgs[i].includes("offer")  && pc.remoteDescription == null ){
       await sendAnswer(JSON.parse(signalingMsgs[i]));
-    } else if (signalingMsgs[i].includes("candidate") && pc.remoteDescription !== null) { // and remote sdp is already set
-      console.log(signalingMsgs[i])//or something
+    } else if (signalingMsgs[i].includes("candidate") && !usedICEs.includes(signalingMsgs[i]) && pc.remoteDescription !== null) {
+      usedICEs.push(signalingMsgs[i])
       await pc.addIceCandidate(JSON.parse(signalingMsgs[i]))
     }
 
@@ -174,9 +174,10 @@ async function onOfferRecieved(signalingMsgs) {
 async function onAnswerRecived(signalingMsgs) {
   var i;
   for(i=0;i<signalingMsgs.length;i++){
-    if (signalingMsgs[i].includes("answer") && pc.remoteDescription == null){ // and conn status is not yet stable
+    if (signalingMsgs[i].includes("answer") && pc.remoteDescription == null){
       await pc.setRemoteDescription(new RTCSessionDescription(JSON.parse(signalingMsgs[i])))
-    } else if (signalingMsgs[i].includes("candidate") && pc.remoteDescription !== null) { // and remote sdp is already set
+    } else if (signalingMsgs[i].includes("candidate") && !usedICEs.includes(signalingMsgs[i]) && pc.remoteDescription !== null) {
+      usedICEs.push(signalingMsgs[i])
       await pc.addIceCandidate(JSON.parse(signalingMsgs[i]))
     }
   }

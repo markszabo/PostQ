@@ -61,7 +61,7 @@ function showMessages(username, userid, symkey) {
         } //handling calls
         else if(fromTo == '0' && msgIdi == 0){
           timestamp=parseInt(decIdAndMsg.split("&")[2])
-          if(timestamp+40000>Date.now()){
+          if(timestamp+20000>Date.now()){
           msg=decIdAndMsg.split("&")[1]
           signalingMsgs.push(msg)
           }
