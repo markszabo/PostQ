@@ -12,6 +12,11 @@
  
 function pageLoaded() {
   if($('#messages').length) $('#messages').scrollTo("max"); //if messages, scroll to bottom
+
+  //Check for localStorage and login user
+  if (localStorage.getItem("local_username") !== null) {
+	  signin_from_localStorage();
+  }
 }
 
 function send() {

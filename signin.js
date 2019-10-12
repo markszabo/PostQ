@@ -31,6 +31,41 @@ function prepareInput() {
   salt = new buffer.SlowBuffer(inputSalt.normalize('NFKC'));
 }
 
+function signin_from_localStorage(){
+  hideLoginAlert();
+  inputEmail = localStorage.getItem('local_username');
+  decryptionkey = atob(localStorage.getItem('local_decryption_key')).split("").map(function(c) { return c.charCodeAt(0); });
+  authenticationkey = localStorage.getItem('local_authenticationkey');
+
+  $.post("login.php", {
+    username: inputEmail,
+    password: authenticationkey
+    },
+    function(data, status){
+      if(data.substring(0,1) == '1') { //successfull login
+        $('#signin').hide();
+        $('#main').show();
+        privatekey = AESdecrypt(data.substr(1), decryptionkey); //login.php returns '1'.privatekey_aes
+        handleFriendRequests();
+        generateMenu();
+      } else {
+        displayLoginAlert("danger",data);
+        //clear localStorage variables because authentication error
+        localStorage.removeItem('local_username');
+        localStorage.removeItem('local_decryption_key');
+        localStorage.removeItem('local_authenticationkey');
+      }
+    }
+  );
+}
+
+function signout(){
+  localStorage.removeItem('local_username');
+  localStorage.removeItem('local_decryption_key');
+  localStorage.removeItem('local_authenticationkey');
+  location.reload();
+}
+
 function signin() {
   hideLoginAlert();
   prepareInput();
@@ -57,6 +92,11 @@ function signin() {
             
             handleFriendRequests();
             generateMenu();
+            if ($('#rememberMe').is(":checked")) { //Option to remeber user saving keys
+              localStorage.setItem('local_username',inputEmail);
+              localStorage.setItem('local_decryption_key', btoa(String.fromCharCode.apply(null,decryptionkey)));
+              localStorage.setItem('local_authenticationkey', authenticationkey);
+            }
           } else {
             displayLoginAlert("danger",data);
           }
