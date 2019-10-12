@@ -44,8 +44,11 @@ function signin() {
       displayLoginAlert("danger","Calculating the scrypt hash of the password failed. Try again. Detailed error: " + error.toString());
     } else if (hash) {
       decryptionkey = hash.slice(0,16);
-      authenticationkey = encodeURIComponent(btoa(String.fromCharCode.apply(null,hash.slice(16,32))));
-      $.get("login.php?username=" + inputEmail + "&password=" + authenticationkey, 
+      authenticationkey = btoa(String.fromCharCode.apply(null,hash.slice(16,32)));
+      $.post("login.php", {
+		username: inputEmail,
+		password: authenticationkey
+	  },
         function(data, status){
           if(data.substring(0,1) == '1') { //successfull login
             $('#signin').hide();

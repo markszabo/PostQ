@@ -38,7 +38,7 @@ function showMessages(username, userid, symkey) {
   msgSymKey = aesCtr.decrypt(encryptedBytes);
   msgSymKey = msgSymKey.slice(0,32);
   
-  $.get("getMessages.php?username=" + inputEmail + "&password=" + authenticationkey + "&user2Id=" + user2Id, 
+  $.post("getMessages.php", { username: inputEmail, password: authenticationkey, user2Id: user2Id },
   function(data, status){
     $('#messages').empty(); //clear previous messages
     var messages = data.split("\n");
