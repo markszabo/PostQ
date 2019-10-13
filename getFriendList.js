@@ -14,7 +14,7 @@ var friends;
 
 function generateMenu() {
   //get friends - name,userId,symkey
-  $.get("getFriendList.php?username=" + inputEmail + "&password=" + authenticationkey,
+  $.post("getFriendList.php", {username: inputEmail, password: authenticationkey},
   function(data, status){
     //empty the menu
     $('#menu').empty();
