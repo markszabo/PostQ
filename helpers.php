@@ -23,13 +23,13 @@ function loginhelper($conn, $username, $password) {
   $stmt->bind_result($db_password, $privatekey);
 
   if(!$stmt->fetch())
-    return "Incorrect username";
+    return "Incorrect credentials";
 
   if(password_verify($password,$db_password)) {
     return "1".$privatekey;
     $stmt->close();
   } else {
-    return "Incorrect password";
+    return "Incorrect credentials";
     $stmt->close();
   }
 }
@@ -47,7 +47,7 @@ function userExists($conn, $username) {
 
   if(!$stmt->fetch())
     return False; //user does not exist
-    
+
   return True; //user exists
 }
 
@@ -64,7 +64,7 @@ function getUserId($conn, $username) {
 
   if(!$stmt->fetch())
     return "Error - user does not exist";
-    
+
   return $userid; //user exists
 }
 
