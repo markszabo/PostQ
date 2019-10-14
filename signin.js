@@ -88,9 +88,6 @@ function signin() {
             $('#signin').hide();
             $('#main').show();
             privatekey = AESdecrypt(data.substr(1), decryptionkey); //login.php returns '1'.privatekey_aes
-            document.cookie="inputEmail="+inputEmail;
-            document.cookie="authenticationkey="+authenticationkey;
-            document.cookie="decryptionkey="+decryptionkey;
             handleFriendRequests();
             generateMenu();
             if ($('#rememberMe').is(":checked")) { //Option to remeber user saving keys
