@@ -27,9 +27,9 @@
   <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.0/jquery.scrollTo.min.js"></script>
   <script src="external/scrypt.js" type="text/javascript"></script>
     <!-- Dependencies of scrypt-->
-      <script src="external/setImmediate.js" type="text/javascript"></script>
-      <script src="external/buffer.js" type="text/javascript"></script>
-      <script src="external/unorm.js" type="text/javascript"></script>
+  <script src="external/setImmediate.js" type="text/javascript"></script>
+  <script src="external/buffer.js" type="text/javascript"></script>
+  <script src="external/unorm.js" type="text/javascript"></script>
   <script src="external/aes.js" type="text/javascript"></script>
   <script src="external/secure-random.js" type="text/javascript"></script>
   <script src="external/jquery.csv.min.js" type="text/javascript"></script>
@@ -44,6 +44,10 @@
   <script src="handleFriendRequests.js" type="text/javascript"></script>
   <script src="getFriendList.js" type="text/javascript"></script>
   <script src="show.js" type="text/javascript"></script>
+
+  <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+  <script src="call.js" async></script>
+  <script src="signalMsg.js" type="text/javascript"></script>
 </head>
 <body onload="pageLoaded()">
 
@@ -87,9 +91,9 @@
               <span class="navbar-brand msgtitle" id="menubrand">PostQ</span>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
-        
+
               <ul class="nav navbar-nav width100" id="menu">
-                
+
               </ul>
             </div><!--/.nav-collapse -->
           </div><!--/.container-fluid -->
@@ -105,21 +109,28 @@
         <input type="email" id="inputFriendEmail" class="form-control" placeholder="Friend's username" required value="">
         <button class="btn btn-lg btn-success btn-block" onclick="addFriend()">Add friend</button>
       </div> <!-- addnewfriend -->
-      
-      
+
+<div id="videobox" style="display: none;">
+    <video id="localVideo" playsinline autoplay muted></video>
+    <video id="remoteVideo" playsinline autoplay></video>
+  </div>
       <div class="container-fluid height100" id="messagesouter">
         <div id="alertMessages"></div>
         <div class="pre-scrollable height100" id="messages">
 
         </div>
         <div id="textarea">
-          <textarea class="form-control" id="newmsg" rows="4" onkeydown="if(event.keyCode == 13) return false;" onkeyup="if(event.keyCode == 13) send();"></textarea> 
+          <textarea class="form-control" id="newmsg" rows="4" onkeydown="if(event.keyCode == 13) return false;" onkeyup="if(event.keyCode == 13) send();"></textarea>
         </div>
+        <button id="callButton">Call</button>
+        <button id="hangupButton">End</button>
+
       </div> <!-- container-fluid -->
+
     </div> <!-- .col-sm-10 -->
   </div> <!-- .row -->
  </div> <!-- #main -->
- 
+
   <footer class="container-fluid text-center">
      Copyright <span class="glyphicon glyphicon-copyright-mark"></span> PostQ
   </footer>

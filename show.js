@@ -27,21 +27,23 @@ var msgIduser2;
 
 function showMessages(username, userid, symkey) {
   clearTimeout(messageUpdateTimer); //otherwise problem with switching between chats
-  
+
   user2Id = userid;
   msgId = 0;
   msgIduser2 = 0;
-  
+
   //decrypt symmetric key
   var encryptedBytes = atob(symkey).split("").map(function(c) { return c.charCodeAt(0); });
   var aesCtr = new aesjs.ModeOfOperation.ctr(decryptionkey, new aesjs.Counter(5));
   msgSymKey = aesCtr.decrypt(encryptedBytes);
   msgSymKey = msgSymKey.slice(0,32);
-  
+ 
   $.post("getMessages.php", { username: inputEmail, password: authenticationkey, user2Id: user2Id },
+
   function(data, status){
     $('#messages').empty(); //clear previous messages
     var messages = data.split("\n");
+    var signalingMsgs = []
     for(var i=0; i<messages.length; i++) {
       if(messages[i] != "") {
         var fromTo = messages[i].substring(0,1);
@@ -50,15 +52,35 @@ function showMessages(username, userid, symkey) {
         var decIdAndMsgA = decIdAndMsg.split(";");
         var msg = decIdAndMsgA[1];
         var msgIdi = parseInt(decIdAndMsgA[0]);
+
         if(fromTo == '1' && msgIdi > msgId) {
           msgId = msgIdi;
           $('#messages').append('<div class="msgFromMe">' + msg + '</div>');
-        } else if(fromTo == '0' && msgIdi > msgIduser2) {
+        } else if(fromTo == '0' && msgIdi > msgIduser2){
           msgIduser2 = msgIdi;
           $('#messages').append('<div class="msgToMe">' + msg + '</div>');
+        } //handling calls
+        else if(fromTo == '0' && msgIdi == 0){
+          timestamp=parseInt(decIdAndMsg.split("&")[2])
+          if(timestamp+10000>Date.now()){
+          msg=decIdAndMsg.split("&")[1]
+          signalingMsgs.push(msg)
+          }
+
         }
       }
     }
+    //if call params were recieved
+    if (signalingMsgs.length > 2)
+    {
+      if (!initiator){
+      onOfferRecieved(signalingMsgs)
+    } else {
+      onAnswerRecived(signalingMsgs)
+    }
+
+    }
+
     $('#addnewfriend').hide();
     $('.msgtitle').text(username);
     $('#messagesouter').show();

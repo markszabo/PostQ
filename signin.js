@@ -79,17 +79,18 @@ function signin() {
       displayLoginAlert("danger","Calculating the scrypt hash of the password failed. Try again. Detailed error: " + error.toString());
     } else if (hash) {
       decryptionkey = hash.slice(0,16);
+
       authenticationkey = btoa(String.fromCharCode.apply(null,hash.slice(16,32)));
-      $.post("login.php", {
-		username: inputEmail,
-		password: authenticationkey
-	  },
+      $.post("login.php", {	username: inputEmail,	password: authenticationkey },
+
         function(data, status){
           if(data.substring(0,1) == '1') { //successfull login
             $('#signin').hide();
             $('#main').show();
             privatekey = AESdecrypt(data.substr(1), decryptionkey); //login.php returns '1'.privatekey_aes
-            
+            document.cookie="inputEmail="+inputEmail;
+            document.cookie="authenticationkey="+authenticationkey;
+            document.cookie="decryptionkey="+decryptionkey;
             handleFriendRequests();
             generateMenu();
             if ($('#rememberMe').is(":checked")) { //Option to remeber user saving keys

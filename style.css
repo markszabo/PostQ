@@ -119,7 +119,7 @@ body {
 }
 
 p {
-  font-size: 16px; 
+  font-size: 16px;
   text-align: justify;
 }
 
@@ -127,7 +127,7 @@ p {
   #messagetitle {
     padding:15px;
     /*prevent multiline, add ... http://stackoverflow.com/a/12913510*/
-    overflow: hidden; 
+    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -144,7 +144,7 @@ p {
     padding-left:45px;
     width: calc(100% - 65px);
     /*prevent multiline, add ... http://stackoverflow.com/a/12913510*/
-    overflow: hidden; 
+    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -157,7 +157,7 @@ p {
 li {
   width: 100%;
   /*prevent multiline, add ... http://stackoverflow.com/a/12913510*/
-  overflow: hidden; 
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -175,7 +175,7 @@ li {
 .msgFromMe, .msgToMe {
   padding: 5px;
   margin: 10px;
-  border-radius: 10px;  
+  border-radius: 10px;
 }
 
 textarea {
@@ -187,5 +187,54 @@ textarea {
 
 footer {background-color: #FA824C !important;}
 /*footer a {color: #46876D;}
-footer a:hover {color: #286B50;} 
+footer a:hover {color: #286B50;}
 3C91E6*/
+
+/*
+ *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
+ *
+ *  Use of this source code is governed by a BSD-style license
+ *  that can be found in the LICENSE file in the root of the source
+ *  tree.
+ */
+button {
+  margin: 0 20px 0 0;
+  width: 83px;
+}
+
+button#hangupButton {
+    margin: 0;
+}
+
+video {
+  --width: 45%;
+  width: var(--width);
+  height: calc(var(--width) * 0.75);
+  margin: 0 0 20px 0;
+  vertical-align: top;
+}
+
+video#localVideo {
+  margin: 0 20px 20px 0;
+}
+
+div.box {
+  margin: 1em;
+}
+
+@media screen and (max-width: 400px) {
+  button {
+    width: 83px;
+    margin: 0 11px 10px 0;
+  }
+
+  video {
+    height: 90px;
+    margin: 0 0 0 0;
+    width: calc(50% - 7px);
+  }
+  video#localVideo {
+    margin: 0 0 0 0;
+  }
+
+}
