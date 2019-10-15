@@ -14,7 +14,7 @@ var friends;
 
 function generateMenu() {
   //get friends - name,userId,symkey
-  $.get("getFriendList.php?username=" + inputEmail + "&password=" + authenticationkey,
+  $.post("getFriendList.php", {username: inputEmail, password: authenticationkey},
   function(data, status){
     //empty the menu
     $('#menu').empty();
@@ -24,5 +24,6 @@ function generateMenu() {
     for(var i = 0; i < friends.length; i++) {
       $('#menu').append('<li id="menuMsgs' + friends[i][1] + '"><a href="javascript:showMessages(\'' + friends[i][0] + '\',\'' + friends[i][1] + '\',\'' + friends[i][2] + '\')"><span class="glyphicon glyphicon-user"></span> ' + friends[i][0] + '</a></li>');
     }
+    $('#menu').append('<li><a href="javascript:signout()"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>');
   });
 }

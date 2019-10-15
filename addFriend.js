@@ -14,7 +14,7 @@ var friend;
 function addFriend() {
   friend = $('#inputFriendEmail').val();
   //get the public key of the given friend
-  $.get("getPublicKey.php?user=" + friend, function(data, status){
+  $.post("getPublicKey.php", { user: friend }, function(data, status){
     if(data.startsWith("Error")) {
       displayAlert("#alertNewFriend","danger",data);
     } else { //no error

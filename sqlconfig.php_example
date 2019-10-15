@@ -1,0 +1,19 @@
+<?php
+/*
+ * Anna Dorottya Simon, Márk Szabó
+ * Neptun-ID: R48G73, EMX74N
+ * Applied cryptography project - a postquantum messenger application
+ * January 2017
+ * This solution was submitted and prepared by Anna Dorottya Simon(R48G73), Már$
+ * We declare that this solution is our own work.
+ * We have put the necessary references wherever we have used bigger and/or com$
+ * Given the uniqueness of the project (no other student had, have or will have$
+ * Students’ regulation of Eötvös Loránd University (ELTE Regulations Vol. II. $
+ */
+
+//change it according to your settings and rename the file to sqlconfig.php
+$sqlservername = "localhost";
+$sqlusername = "username";
+$sqlpassword = "password";
+$sqldbname = "postq";
+?>

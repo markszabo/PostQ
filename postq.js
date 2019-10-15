@@ -12,6 +12,11 @@
  
 function pageLoaded() {
   if($('#messages').length) $('#messages').scrollTo("max"); //if messages, scroll to bottom
+
+  //Check for localStorage and login user
+  if (localStorage.getItem("local_username") !== null) {
+	  signin_from_localStorage();
+  }
 }
 
 function send() {
@@ -21,7 +26,7 @@ function send() {
   $('#newmsg').val(''); //cleare the message box
   
   var encMsg = AESencrypt(msgWithId,msgSymKey);
-  $.get("sendMsg.php?username=" + inputEmail + "&password=" + authenticationkey + "&user2Id=" + user2Id + "&msg=" + encMsg, 
+  $.post("sendMsg.php", { username: inputEmail, password: authenticationkey,  user2Id: user2Id, msg: encMsg }, 
   function(data, status){
     if(data == 1) { //if success, display message
       $("#alertMessages").hide(); //hide the alert

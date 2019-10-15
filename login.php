@@ -11,11 +11,14 @@
  * Students’ regulation of Eötvös Loránd University (ELTE Regulations Vol. II. 74/C. § ) states that as long as a student presents another student’s work - or at least the significant part of it - as his/her own performance, it will count as a disciplinary fault. The most serious consequence of a disciplinary fault can be dismissal of the student from the University.
  */
  
-//Usage: login.php?username=email@adfs.hu&password=iExmLmGEgXVDPfGjI%2Fk5Iw%3D%3D
+//Usage: login.php
+//       POST username: email@adfs.hu
+//            password: iExmLmGEgXVDPfGjI%2Fk5Iw==
+
 include_once("helpers.php");
 require_once("sqlconnect.php");
-if(!$_GET['username'] || !$_GET['password'])
+if(!$_POST['username'] || !$_POST['password'])
   die("Error - one of the parameters is not set.");
 
-echo loginhelper($conn, $_GET['username'], $_GET['password']);
+echo loginhelper($conn, $_POST['username'], $_POST['password']);
 ?>

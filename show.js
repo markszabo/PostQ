@@ -37,8 +37,9 @@ function showMessages(username, userid, symkey) {
   var aesCtr = new aesjs.ModeOfOperation.ctr(decryptionkey, new aesjs.Counter(5));
   msgSymKey = aesCtr.decrypt(encryptedBytes);
   msgSymKey = msgSymKey.slice(0,32);
+ 
+  $.post("getMessages.php", { username: inputEmail, password: authenticationkey, user2Id: user2Id },
 
-  $.get("getMessages.php?username=" + inputEmail + "&password=" + authenticationkey + "&user2Id=" + user2Id,
   function(data, status){
     $('#messages').empty(); //clear previous messages
     var messages = data.split("\n");

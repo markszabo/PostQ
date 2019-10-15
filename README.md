@@ -72,8 +72,6 @@ RSA is not a post-quantum algorithm, so we had to find an other algorithm. Our f
 
 The following features could be implemented in the future:
 * Generate new shared secrets after some time / given number of messages
-* Implement session management with cookies to be able to stay logged in
-* Change the GET requests to POST - to prevent sensitive data appearing in logs
 * Implement 'Forgot my password' functionality and e-mail verification
 * Mix NTRU with a pre-quantum algorithm (eg. ECDH, RSA) to provide secrecy even in case NTRU turns out to be insecure
 

@@ -11,20 +11,24 @@
  * Students’ regulation of Eötvös Loránd University (ELTE Regulations Vol. II. 74/C. § ) states that as long as a student presents another student’s work - or at least the significant part of it - as his/her own performance, it will count as a disciplinary fault. The most serious consequence of a disciplinary fault can be dismissal of the student from the University.
  */
  
-//Usage: getMessages.php?username=email@adfs.hu&password=iExmLmGEgXVDPfGjI%2Fk5Iw%3D%3D&user2Id=5
+//Usage: getMessages.php
+//       POST username: email@adfs.hu
+//            password: iExmLmGEgXVDPfGjI%2Fk5Iw%3D%3D
+//            user2Id:  5
+
 require_once("helpers.php");
 require_once("sqlconnect.php");
-if(!$_GET['username'] || !$_GET['password'] || !$_GET['user2Id'])
+if(!$_POST['username'] || !$_POST['password'] || !$_POST['user2Id'])
   die("Error - one of the parameters is not set.");
 
 //check password
-if(!(substr(loginhelper($conn, $_GET['username'], $_GET['password']),0,1) === "1")) //loginhelper() needs to return with 1... for successfull login
+if(!(substr(loginhelper($conn, $_POST['username'], $_POST['password']),0,1) === "1")) //loginhelper() needs to return with 1... for successfull login
   die("Authentication failed");
   
-$userId = getUserId($conn, $_GET['username']);
+$userId = getUserId($conn, $_POST['username']);
 // prepare, bind and execute
 $stmt = $conn->prepare("SELECT messages, user1 FROM messages WHERE (messages.user1 = ? AND  messages.user2 = ?) OR (messages.user2 = ? AND  messages.user1 = ?) ORDER BY time ASC"); 
-$stmt->bind_param("iiii", $userId, $_GET['user2Id'], $userId, $_GET['user2Id']);
+$stmt->bind_param("iiii", $userId, $_POST['user2Id'], $userId, $_POST['user2Id']);
 $stmt->execute();
 if ($stmt->errno)
   die("Error during the execution of the SQL query");
