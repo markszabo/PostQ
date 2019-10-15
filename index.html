@@ -58,10 +58,11 @@
     <label for="inputEmail" class="sr-only">Username</label>
     <input type="text" id="inputEmail" class="form-control" placeholder="Username" required autofocus value="">
     <label for="inputPassword" class="sr-only">Password</label>
-    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required value="">
+    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required value="" onkeyup="if(event.keyCode == 13) signin();">
     <div class="checkbox">
       <label>
         <input type="checkbox" value="remember-me" id="rememberMe"> Remember me
+           <span class="glyphicon glyphicon-question-sign" title="Session data will be kept in your browser local storage. Use only if you trust all users of your computer!"></span>
       </label>
     </div>
     <button class="btn btn-lg btn-success btn-block" onclick="signin()">Sign in</button>
