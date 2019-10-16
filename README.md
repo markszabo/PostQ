@@ -17,6 +17,7 @@ A webserver with php and an SQL server is needed to run PostQ.
 3. Rename `sqlconfig.php_example` to `sqlconfig.php`.
 4. Open `/install.php` in browser. This will create the necessary database tables.
 5. Open `index.html` and use the application.
+6. E-mail verification can be enabled editing file `mail_config.php`. Remeber to configure PHP mail() function to be able to send e-maisl from your server.
 
 ## Attack model
 
@@ -72,7 +73,7 @@ RSA is not a post-quantum algorithm, so we had to find an other algorithm. Our f
 
 The following features could be implemented in the future:
 * Generate new shared secrets after some time / given number of messages
-* Implement 'Forgot my password' functionality and e-mail verification
+* Implement 'Forgot my password' functionality
 * Mix NTRU with a pre-quantum algorithm (eg. ECDH, RSA) to provide secrecy even in case NTRU turns out to be insecure
 
 ## External libraries

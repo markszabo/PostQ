@@ -129,10 +129,15 @@ function register() {
         },
         function(data, status){
           updateInterface(1);
-          if(data == "1") { //success
-            displayLoginAlert("success","Registration successful, you can login now.");
-          } else {
-            displayLoginAlert("danger",data);
+          switch (data) {
+            case "1": //success (no mail registration)
+              displayLoginAlert("success","Registration successful, you can login now.");
+              break;
+            case "2": //success (mail sent)
+              displayLoginAlert("success","Please check your e-mail to complete registration.");
+              break;
+            default:
+              displayLoginAlert("danger",data);
           }
         });
       });
