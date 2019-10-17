@@ -17,7 +17,7 @@ A webserver with php and an SQL server is needed to run PostQ.
 3. Rename `sqlconfig.php_example` to `sqlconfig.php`.
 4. Open `/install.php` in browser. This will create the necessary database tables.
 5. Open `index.html` and use the application.
-6. E-mail verification can be enabled editing file `mail_config.php`. Remeber to configure PHP mail() function to be able to send e-maisl from your server.
+6. E-mail verification can be enabled editing file `mail_config.php`. Remeber to configure PHP mail() function to be able to send e-mails from your server.
 
 ## Attack model
 

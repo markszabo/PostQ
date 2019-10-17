@@ -28,9 +28,9 @@ if(!$_POST['username'] || !$_POST['password'] || !$_POST['privatekey'] || !$_POS
 if(userExists($conn, $_POST['username']))
   die("Error - user already exists. Try to login instead.");
 
-if ($use_mail_registration) {
+if($use_mail_registration) {
   //Check if username is valid email address
-  if (!filter_var($_POST['username'], FILTER_VALIDATE_EMAIL)){
+  if(!filter_var($_POST['username'], FILTER_VALIDATE_EMAIL)){
     die("Error - Username must be a valid e-mail");
   }
 
@@ -38,7 +38,7 @@ if ($use_mail_registration) {
   $stmt = $conn->prepare("DELETE FROM unverified_users WHERE username=?");
   $stmt->bind_param("s", $_POST['username']);
   $stmt->execute();
-  if ($stmt->errno) {
+  if($stmt->errno) {
       die("Error during the execution of the SQL query");
   }
   $stmt->close();
@@ -49,7 +49,7 @@ if ($use_mail_registration) {
   $expires=time()+$expiration_time;
   $stmt->bind_param("sssssi", $_POST['username'], password_hash($_POST['password'], PASSWORD_BCRYPT), $_POST['privatekey'], base64_decode($_POST['publickey']), $code, $expires);
   $stmt->execute();
-  if ($stmt->errno) {
+  if($stmt->errno) {
       die("Error during the execution of the SQL query");
   }
 
@@ -58,7 +58,7 @@ if ($use_mail_registration) {
        $mail_subject,
        str_replace("<registration_code/>", $code,  $mail_message),
        $mail_headers);
-  if ($s)
+  if($s)
     exit("2"); //registration mail sent sucessfull
   else
     die("Error sending mail");
@@ -68,7 +68,7 @@ if ($use_mail_registration) {
 $stmt = $conn->prepare("INSERT INTO users (username, password, privatekey, publickey) VALUES (?, ?, ?, ?)");
 $stmt->bind_param("ssss", $_POST['username'], password_hash($_POST['password'], PASSWORD_BCRYPT), $_POST['privatekey'], base64_decode($_POST['publickey']));
 $stmt->execute();
-if ($stmt->errno) {
+if($stmt->errno) {
     die("Error during the execution of the SQL query");
 }
 

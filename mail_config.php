@@ -10,7 +10,7 @@ Thanks for signing up!
 Your account has been created, you can login after activating it using url below.
  
 Please click this link to activate your account:
-http://www.yourwebsite.com/verify.php?code=<registration_code/>
+https://www.yourwebsite.com/verify.php?code=<registration_code/>
  
 '; // Message above including the link. All occurrences of <registration_code/> will be replace to random code
 
