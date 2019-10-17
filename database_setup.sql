@@ -93,6 +93,20 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin2 COLLATE=latin2_hungarian_ci;
 
 --
+-- Table structure for table `unverified_users`
+--
+
+DROP TABLE IF EXISTS `unverified_users`;
+CREATE TABLE `unverified_users` (
+  `username` varchar(80) COLLATE latin2_hungarian_ci NOT NULL,
+  `password` varchar(65) COLLATE latin2_hungarian_ci NOT NULL,
+  `privatekey` text COLLATE latin2_hungarian_ci NOT NULL,
+  `publickey` text COLLATE latin2_hungarian_ci NOT NULL,
+  `registrationcode` varchar(65) COLLATE latin2_hungarian_ci NOT NULL,
+  `expires` timestamp NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin2 COLLATE=latin2_hungarian_ci;
+
+--
 -- Indexes for table `friendrequests`
 --
 ALTER TABLE `friendrequests`
@@ -115,6 +129,12 @@ ALTER TABLE `symkeys`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `unverified_users`
+--
+ALTER TABLE `unverified_users`
+  ADD PRIMARY KEY (`registrationcode`);
 
 --
 -- AUTO_INCREMENT for table `friendrequests`
