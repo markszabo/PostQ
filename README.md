@@ -2,11 +2,29 @@
 
 This repository contains the code of PostQ: a web-based messenger application with end-to-end post-quantum encryption. This was created as a homework for the Applied Cryptography Project Seminar class at [ELTE](http://elte.hu/), Hungary by [Anna Dorottya Simon](https://github.com/annadorottya) and [Márk Szabó](https://github.com/markszabo/).
 
+## Warning
+
+The messaging protocol and the implementation was developed during a university course in 2016 by university students. Neither the protocol nor the implementation went through proper security testing, so using this in production is __highly__ discouraged. Also doing cryptography in JavaScript securely is very hard, and the libraries used here are not meant to be used for secure operations, very likely opening up the entire implementation to all sorts of attacks.
+
+## Quick peak
+
 ![Login](https://github.com/markszabo/postq/raw/master/img/login.png "Login")
 
 This is a fully web-based messenger application written in JavaScript (Jquery) and php. For the interface we have used Bootstrap and on the backend the data is stored in a MySQL database.
 
 ![Chat](https://github.com/markszabo/postq/raw/master/img/chat.png "Chat")
+
+## Future development
+
+The following features could be implemented in the future:
+* Generate new shared secrets after some time / given number of messages
+* Implement 'Forgot my password' functionality
+* Mix NTRU with a pre-quantum algorithm (eg. ECDH, RSA) to provide secrecy even in case NTRU turns out to be insecure
+* Dockerize the project to help new contributors
+* Add end2end tests
+* Setup some CI (e.g. [Travis](https://travis-ci.org/)) to run the tests on every PR 
+
+Feel free to take any of them (or any other feature/bug fix) and send a PR.
 
 ## Installation
 
@@ -68,13 +86,6 @@ As stated above, using quantum computers, the key length of symmetric crypograph
 #### NTRU Prime for public key
 
 RSA is not a post-quantum algorithm, so we had to find an other algorithm. Our first suggestion was the classic [NTRU](https://en.wikipedia.org/wiki/NTRU), which is a lattice-based public key cryptographic algorithm, developed in 1996, relying on the [Closest Vector Problem](https://en.wikipedia.org/wiki/Lattice_problem#Closest_vector_problem_.28CVP.29). However since NTRU uses rings which are not fields, there are some potential attacks against it. In May 2016, Daniel Bernstein, Tanja Lange et al released [NTRU Prime](https://ntruprime.cr.yp.to/ntruprime-20160511.pdf), which uses fields, eliminating these attacks. We decided to implement this latter version of NTRU.
-
-## Future development
-
-The following features could be implemented in the future:
-* Generate new shared secrets after some time / given number of messages
-* Implement 'Forgot my password' functionality
-* Mix NTRU with a pre-quantum algorithm (eg. ECDH, RSA) to provide secrecy even in case NTRU turns out to be insecure
 
 ## External libraries
 
