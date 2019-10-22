@@ -87,6 +87,18 @@ As stated above, using quantum computers, the key length of symmetric crypograph
 
 RSA is not a post-quantum algorithm, so we had to find an other algorithm. Our first suggestion was the classic [NTRU](https://en.wikipedia.org/wiki/NTRU), which is a lattice-based public key cryptographic algorithm, developed in 1996, relying on the [Closest Vector Problem](https://en.wikipedia.org/wiki/Lattice_problem#Closest_vector_problem_.28CVP.29). However since NTRU uses rings which are not fields, there are some potential attacks against it. In May 2016, Daniel Bernstein, Tanja Lange et al released [NTRU Prime](https://ntruprime.cr.yp.to/ntruprime-20160511.pdf), which uses fields, eliminating these attacks. We decided to implement this latter version of NTRU.
 
+## Contributors
+
+In chronological order of their contributions:
+
+* The original protocol and code was developed by [Anna Dorottya Simon](https://github.com/annadorottya) and [Márk Szabó](https://github.com/markszabo/)
+* [f-viktor](https://github.com/f-viktor) added the VideoChat feature ([PR #2](https://github.com/markszabo/PostQ/pull/2))
+* [deleterium](https://github.com/deleterium) did various improvements (moving from GET to POST calls, saving the session to localstorage, having email verification at registration)
+
+Thank you for all contributors for their time and efforts. 
+
+Feel free to contribute and include yourself here when you send a PR.
+
 ## External libraries
 
 The following external libraries were used in the project. All but the Polynomial.js are unchanged and simply downloaded to the `external` directory. Polynomial.js was extended from the field Zp to the truncated polynomial ring Zp/f and thus placed in the root directory of the project.
