@@ -42,6 +42,24 @@ function AESdecryptCTR(ciphertext, key, hexNonce) {
   return aesjs.util.convertBytesToString(decryptedBytes);
 }
 
+function AESencryptCBC_txt(text, key, iniVector) {
+  text = aesjs.util.convertStringToBytes(text);
+  while (text.length % 16 !== 0) //insert null padding
+    text.push(0);
+  var aesCBC = new aesjs.ModeOfOperation.cbc(key, iniVector);
+  var encryptedBytes = aesCBC.encrypt(text);
+  return btoa(String.fromCharCode.apply(null,encryptedBytes));
+}
+
+function AESdecryptCBC_txt(ciphertext, key, iniVector) {
+  var encryptedBytes = atob(ciphertext).split("").map(function(c) { return c.charCodeAt(0); });
+  var aesCBC = new aesjs.ModeOfOperation.cbc(key, iniVector);
+  var decryptedBytes = aesCBC.decrypt(encryptedBytes);
+  while (decryptedBytes[decryptedBytes.length-1] == 0) //remove null padding
+    decryptedBytes.pop();
+  return aesjs.util.convertBytesToString(decryptedBytes);
+}
+
 /* ------- utils ------- */
 function HexString_2_ByteArray(hexString) {
   var result = [];

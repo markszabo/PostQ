@@ -161,8 +161,8 @@ function prepare() {
   logToScreen("<h2>Prepare started</h2>");
   var decryptionkey = secureRandom(16); //originally the first 16 character of the hash of the password, but it will do here
   generateNTRUKeys(decryptionkey, function(keys) {
-    var encprivate = keys[0];
-    privatekey = AESdecrypt(encprivate, decryptionkey)
+    privatekey = keys[0];
+    var encprivate = AESencryptCBC_txt(privatekey, decryptionkey)
     publickey = keys[1]; 
     logToScreen("<b>The following keys have been generated:</b>");
     logToScreen("<b>Decryptionkey: </b>" + decryptionkey.toString());
