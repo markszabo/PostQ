@@ -24,3 +24,42 @@ function AESdecrypt(ciphertext, key) {
   var decryptedBytes = aesCtr.decrypt(encryptedBytes);
   return aesjs.util.convertBytesToString(decryptedBytes);
 }
+
+function AESencryptCTR(text, key, arrNonce) {
+  if(typeof text === 'string')
+    text = aesjs.util.convertStringToBytes(text);
+  var shiftedNonce = [0, 0, 0, 0, 0, 0, 0, 0 ].concat(arrNonce);
+  var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(shiftedNonce));
+  var encryptedBytes = aesCtr.encrypt(text);
+  return btoa(String.fromCharCode.apply(null,encryptedBytes));
+}
+
+function AESdecryptCTR(ciphertext, key, hexNonce) {
+  var encryptedBytes = atob(ciphertext).split("").map(function(c) { return c.charCodeAt(0); });
+  var shiftedNonce = [0, 0, 0, 0, 0, 0, 0, 0 ].concat(HexString_2_ByteArray(hexNonce));
+  var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(shiftedNonce));
+  var decryptedBytes = aesCtr.decrypt(encryptedBytes);
+  return aesjs.util.convertBytesToString(decryptedBytes);
+}
+
+/* ------- utils ------- */
+function HexString_2_ByteArray(hexString) {
+  var result = [];
+  for (var i = 0; i < hexString.length; i += 2) {
+    result.push(parseInt(hexString.substr(i, 2), 16));
+  }
+  return result;
+}
+
+function ByteArray_2_HexString(arr) {
+  var result = "";
+  for (i in arr) {
+    var str = arr[i].toString(16);
+    str = str.length == 0 ? "00" :
+    str.length == 1 ? "0" + str :
+    str.length == 2 ? str :
+    str.substring(str.length-2, str.length);
+    result += str;
+  }
+  return result;
+}

@@ -47,8 +47,9 @@ function showMessages(username, userid, symkey) {
     for(var i=0; i<messages.length; i++) {
       if(messages[i] != "") {
         var fromTo = messages[i].substring(0,1);
-        var idAndMsg = messages[i].substring(1);
-        var decIdAndMsg = AESdecrypt(idAndMsg, msgSymKey);
+        var msgNonce = messages[i].substring(1, messages[i].indexOf(";"));
+        var idAndMsg = messages[i].substring(messages[i].indexOf(";")+1);
+        var decIdAndMsg = AESdecryptCTR(idAndMsg, msgSymKey, msgNonce);
         var decIdAndMsgA = decIdAndMsg.split(";");
         var msg = decIdAndMsgA[1];
         var msgIdi = parseInt(decIdAndMsgA[0]);

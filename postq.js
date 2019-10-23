@@ -25,8 +25,10 @@ function send() {
   var msgWithId = msgId.toString() + ";" + msg;
   $('#newmsg').val(''); //cleare the message box
   
-  var encMsg = AESencrypt(msgWithId,msgSymKey);
-  $.post("sendMsg.php", { username: inputEmail, password: authenticationkey,  user2Id: user2Id, msg: encMsg }, 
+  var nonce = secureRandom(8);
+  var encMsg = AESencryptCTR(msgWithId,msgSymKey,nonce);
+  var hexNonce = ByteArray_2_HexString(nonce);
+  $.post("sendMsg.php", { username: inputEmail, password: authenticationkey,  user2Id: user2Id, msg: encMsg, nonce: hexNonce}, 
   function(data, status){
     if(data == 1) { //if success, display message
       $("#alertMessages").hide(); //hide the alert
