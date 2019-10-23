@@ -9,21 +9,6 @@
  * Given the uniqueness of the project (no other student had, have or will have the same project) we have published our code on GitHub with the permission of our professors.
  * Students’ regulation of Eötvös Loránd University (ELTE Regulations Vol. II. 74/C. § ) states that as long as a student presents another student’s work - or at least the significant part of it - as his/her own performance, it will count as a disciplinary fault. The most serious consequence of a disciplinary fault can be dismissal of the student from the University.
  */
- 
-function AESencrypt(text, key) {
-  if(typeof text === 'string')
-    text = aesjs.util.convertStringToBytes(text);
-  var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5));
-  var encryptedBytes = aesCtr.encrypt(text);
-  return encodeURIComponent(btoa(String.fromCharCode.apply(null,encryptedBytes)));
-}
-
-function AESdecrypt(ciphertext, key) {
-  var encryptedBytes = atob(decodeURIComponent(ciphertext)).split("").map(function(c) { return c.charCodeAt(0); });
-  var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5));
-  var decryptedBytes = aesCtr.decrypt(encryptedBytes);
-  return aesjs.util.convertBytesToString(decryptedBytes);
-}
 
 function AESencryptCTR(text, key, arrNonce) {
   if(typeof text === 'string')
@@ -58,6 +43,19 @@ function AESdecryptCBC_txt(ciphertext, key, iniVector) {
   while (decryptedBytes[decryptedBytes.length-1] == 0) //remove null padding
     decryptedBytes.pop();
   return aesjs.util.convertBytesToString(decryptedBytes);
+}
+
+function AESencryptCBC_arr(arr, key, iniVector) {
+  var aesCBC = new aesjs.ModeOfOperation.cbc(key, iniVector);
+  var encryptedBytes = aesCBC.encrypt(arr);
+  return btoa(String.fromCharCode.apply(null,encryptedBytes));
+}
+
+function AESdecryptCBC_arr(ciphertext, key, iniVector) {
+  var encryptedBytes = atob(ciphertext).split("").map(function(c) { return c.charCodeAt(0); });
+  var aesCBC = new aesjs.ModeOfOperation.cbc(key, iniVector);
+  var decryptedBytes = aesCBC.decrypt(encryptedBytes);
+  return decryptedBytes;
 }
 
 /* ------- utils ------- */

@@ -19,7 +19,7 @@ function handleFriendRequests() {
       //NTRU decrypt
       var plainSymKey = NTRUDecapsulate(requests[i][2], privatekey);
       //AES encrypt the symkey
-      var AESSymKey = AESencrypt(plainSymKey, decryptionkey);
+      var AESSymKey = AESencryptCBC_arr(plainSymKey, decryptionkey);
       //send the symkey back, delete the requests
       $.post("acceptRequest.php", { username: inputEmail, password: authenticationkey, friendId: requests[i][1], symkeyforme: AESSymKey },
       function(data, status){
