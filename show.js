@@ -13,9 +13,22 @@
 function showAddNewFriend() {
   clearTimeout(messageUpdateTimer);
   $('#messagesouter').hide();
+  $('#friendRequests').hide();
+  $('#alertNewFriend').empty();
   $('.msgtitle').text('Add new friend');
   $('#addnewfriend').show();
   markSelected("menuAddnewfriend");
+}
+
+function showFriendRequests() {
+  clearTimeout(messageUpdateTimer);
+  $('#messagesouter').hide();
+  $('#addnewfriend').hide();
+  $('.msgtitle').text('Manage friend requests');
+  $('#alertFriendRequests').empty();
+  $('#friendRequests').show();
+  markSelected("menuFriendRequests");
+  handleFriendRequests()
 }
 
 var user2Id;
@@ -80,6 +93,7 @@ function showMessages(username, userid, symkey) {
     }
 
     $('#addnewfriend').hide();
+    $('#friendRequests').hide();
     $('.msgtitle').text(username);
     $('#messagesouter').show();
     $('#messages').scrollTo("max");

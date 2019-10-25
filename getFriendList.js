@@ -20,6 +20,7 @@ function generateMenu() {
     $('#menu').empty();
     //add AddFriend button to the top
     $('#menu').append('<li id="menuAddnewfriend" class="active"><a href="javascript:showAddNewFriend()"><span class="glyphicon glyphicon-plus"></span> New friend</a></li>');
+    $('#menu').append('<li id="menuFriendRequests"><a href="javascript:showFriendRequests()"><span class="glyphicon glyphicon-edit"></span> Friend requests</a></li>');
     friends = $.csv.toArrays(data);
     for(var i = 0; i < friends.length; i++) {
       $('#menu').append('<li id="menuMsgs' + friends[i][1] + '"><a href="javascript:showMessages(\'' + friends[i][0] + '\',\'' + friends[i][1] + '\',\'' + friends[i][2] + '\')"><span class="glyphicon glyphicon-user"></span> ' + friends[i][0] + '</a></li>');

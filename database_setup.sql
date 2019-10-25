@@ -43,8 +43,9 @@ USE `postq`;
 DROP TABLE IF EXISTS `friendrequests`;
 CREATE TABLE `friendrequests` (
   `id` int(11) NOT NULL,
-  `user1` int(11) NOT NULL,
-  `user2` int(11) NOT NULL,
+  `useridTO` int(11) NOT NULL,
+  `useridFROM` int(11) NOT NULL,
+  `usernameFROM` varchar(80) COLLATE latin2_hungarian_ci NOT NULL,
   `symkey` text COLLATE latin2_hungarian_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin2 COLLATE=latin2_hungarian_ci;
 

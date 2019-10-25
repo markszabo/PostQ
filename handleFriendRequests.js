@@ -9,22 +9,58 @@
  * Given the uniqueness of the project (no other student had, have or will have the same project) we have published our code on GitHub with the permission of our professors.
  * Students’ regulation of Eötvös Loránd University (ELTE Regulations Vol. II. 74/C. § ) states that as long as a student presents another student’s work - or at least the significant part of it - as his/her own performance, it will count as a disciplinary fault. The most serious consequence of a disciplinary fault can be dismissal of the student from the University.
  */
- 
+
+var requests;
+
 function handleFriendRequests() {
+
   //get new requests - user1,user2,symkey
   $.post("getNewRequests.php", { username: inputEmail, password: authenticationkey } ,
   function(data, status){
-    var requests = $.csv.toArrays(data);
+    requests = $.csv.toArrays(data);
+    $('#friendrequestsouter').empty(); //clear previous requests
+
     for(var i = 0; i < requests.length; i++) {
-      //NTRU decrypt
-      var plainSymKey = NTRUDecapsulate(requests[i][2], privatekey);
-      //AES encrypt the symkey
-      var AESSymKey = AESencryptCBC_arr(plainSymKey, decryptionkey);
-      //send the symkey back, delete the requests
-      $.post("acceptRequest.php", { username: inputEmail, password: authenticationkey, friendId: requests[i][1], symkeyforme: AESSymKey },
-      function(data, status){
-        generateMenu();
-      });
+      $('#friendrequestsouter').append('<div> \
+         <a href="javascript:acceptRequest(' + i.toString() + ')"> <span class="glyphicon glyphicon-ok"></span></a> \
+         <a href="javascript:rejectRequest(' + i.toString() + ')"> <span class="glyphicon glyphicon-remove"></span></a> ' +
+         requests[i][2] +  '</div>');
     }
   });
+}
+
+function acceptRequest(requestID) {
+  var i = parseInt(requestID);
+  //NTRU decrypt
+  var plainSymKey = NTRUDecapsulate(requests[i][3], privatekey);
+  //AES encrypt the symkey
+  var AESSymKey = AESencryptCBC_arr(plainSymKey, decryptionkey);
+  //send the symkey back, delete the requests
+  $.post("acceptRequest.php", { username: inputEmail, password: authenticationkey, friendId: requests[i][1], symkeyforme: AESSymKey },
+  function(data, status){
+      if(data == "1") { //success
+        displayAlert("#alertFriendRequests","success","Friend added successfully!");
+        generateMenu();
+        handleFriendRequests();
+      } else {
+        displayAlert("#alertFriendRequests","danger",data);
+      }
+    }
+  );
+}
+
+function rejectRequest(requestID) {
+  var i = parseInt(requestID);
+  //delete request
+  $.post("rejectRequest.php", { username: inputEmail, password: authenticationkey, friendId: requests[i][1] },
+    function(data, status){
+      if(data == "1") { //success
+        displayAlert("#alertFriendRequests","success","Friend request rejected!");
+        generateMenu();
+        handleFriendRequests();
+      } else {
+        displayAlert("#alertFriendRequests","danger",data);
+      }
+    }
+  );
 }
