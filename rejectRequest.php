@@ -16,7 +16,7 @@ if(!(substr(loginhelper($conn, $_POST['username'], $_POST['password']),0,1) === 
 
 $userId = getUserId($conn, $_POST['username']);
 //delete request
-$stmt = $conn->prepare("DELETE FROM friendrequests WHERE useridTO = ? AND useridFROM = ?");
+$stmt = $conn->prepare("UPDATE friendrequests SET rejected = 1 WHERE useridTO = ? AND useridFROM = ?");
 $stmt->bind_param("ii", $userId, $_POST['friendId']);
 $stmt->execute();
 if ($stmt->errno)
@@ -24,12 +24,6 @@ if ($stmt->errno)
 
 if($conn->affected_rows !== 1)
   die("Error - not existing friend requests");
-
-$stmt = $conn->prepare("DELETE FROM symkeys WHERE user1 = ? AND user2 = ?");
-$stmt->bind_param("ii", $_POST['friendId'], $userId);
-$stmt->execute();
-if ($stmt->errno)
-  die("Error during the execution of the SQL query - 3");
 
 echo "1";
 
