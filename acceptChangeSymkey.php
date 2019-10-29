@@ -1,6 +1,6 @@
 <?php
 
-//Usage: acceptRequest.php
+//Usage: acceptChangeSymkey.php
 //   username=test@test.com
 //   password=iExmLmGEgXVDPfGjI%2Fk5Iw%3D%3D
 //   friendId=5
