@@ -33,10 +33,7 @@ function showMessages(username, userid, symkey) {
   msgIduser2 = 0;
 
   //decrypt symmetric key
-  var encryptedBytes = atob(symkey).split("").map(function(c) { return c.charCodeAt(0); });
-  var aesCtr = new aesjs.ModeOfOperation.ctr(decryptionkey, new aesjs.Counter(5));
-  msgSymKey = aesCtr.decrypt(encryptedBytes);
-  msgSymKey = msgSymKey.slice(0,32);
+  msgSymKey = AESdecryptCBC_arr(symkey, decryptionkey);
  
   $.post("getMessages.php", { username: inputEmail, password: authenticationkey, user2Id: user2Id },
 
@@ -47,8 +44,9 @@ function showMessages(username, userid, symkey) {
     for(var i=0; i<messages.length; i++) {
       if(messages[i] != "") {
         var fromTo = messages[i].substring(0,1);
-        var idAndMsg = messages[i].substring(1);
-        var decIdAndMsg = AESdecrypt(idAndMsg, msgSymKey);
+        var msgNonce = messages[i].substring(1, messages[i].indexOf(";"));
+        var idAndMsg = messages[i].substring(messages[i].indexOf(";")+1);
+        var decIdAndMsg = AESdecryptCTR(idAndMsg, msgSymKey, msgNonce);
         var decIdAndMsgA = decIdAndMsg.split(";");
         var msg = decIdAndMsgA[1];
         var msgIdi = parseInt(decIdAndMsgA[0]);

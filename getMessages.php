@@ -27,19 +27,19 @@ if(!(substr(loginhelper($conn, $_POST['username'], $_POST['password']),0,1) === 
   
 $userId = getUserId($conn, $_POST['username']);
 // prepare, bind and execute
-$stmt = $conn->prepare("SELECT messages, user1 FROM messages WHERE (messages.user1 = ? AND  messages.user2 = ?) OR (messages.user2 = ? AND  messages.user1 = ?) ORDER BY time ASC"); 
+$stmt = $conn->prepare("SELECT messages, user1, nonce FROM messages WHERE (messages.user1 = ? AND  messages.user2 = ?) OR (messages.user2 = ? AND  messages.user1 = ?) ORDER BY time ASC");
 $stmt->bind_param("iiii", $userId, $_POST['user2Id'], $userId, $_POST['user2Id']);
 $stmt->execute();
 if ($stmt->errno)
   die("Error during the execution of the SQL query");
 
 //get the result
-$stmt->bind_result($message, $user1);
+$stmt->bind_result($message, $user1, $nonce);
 
 while($stmt->fetch()) {
   if($user1 === $userId)
-    echo "1" . $message . "\n";
+    echo "1" . $nonce . ";" . $message . "\n";
   else
-    echo "0" . $message . "\n";
+    echo "0" . $nonce . ";" . $message . "\n";;
   }
 ?>

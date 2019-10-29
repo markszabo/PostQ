@@ -45,7 +45,7 @@ function signin_from_localStorage(){
       if(data.substring(0,1) == '1') { //successfull login
         $('#signin').hide();
         $('#main').show();
-        privatekey = AESdecrypt(data.substr(1), decryptionkey); //login.php returns '1'.privatekey_aes
+        privatekey = AESdecryptCBC_txt(data.substr(1), decryptionkey); //login.php returns '1'.privatekey_aes
         handleFriendRequests();
         generateMenu();
       } else {
@@ -87,7 +87,7 @@ function signin() {
           if(data.substring(0,1) == '1') { //successfull login
             $('#signin').hide();
             $('#main').show();
-            privatekey = AESdecrypt(data.substr(1), decryptionkey); //login.php returns '1'.privatekey_aes
+            privatekey = AESdecryptCBC_txt(data.substr(1), decryptionkey); //login.php returns '1'.privatekey_aes
             handleFriendRequests();
             generateMenu();
             if ($('#rememberMe').is(":checked")) { //Option to remeber user saving keys
@@ -119,12 +119,13 @@ function register() {
     } else if (hash) {
       decryptionkey = hash.slice(0,16);
       var authenticationkey = btoa(String.fromCharCode.apply(null,hash.slice(16,32)));
-      keys = generateNTRUKeys(decryptionkey, function(keys){
+      generateNTRUKeys(decryptionkey, function(keys){
         updateInterface(0.9);
+        var enc_privatekey= AESencryptCBC_txt(keys[0],decryptionkey);
         $.post("register.php", {
           username: inputEmail,
           password: authenticationkey,
-          privatekey: keys[0],
+          privatekey: enc_privatekey,
           publickey: btoa(keys[1])
         },
         function(data, status){

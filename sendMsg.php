@@ -18,7 +18,7 @@
 //            msg:      iExmLmGEgXVDPfGjI+=
 require_once("helpers.php");
 require_once("sqlconnect.php");
-if(!$_POST['username'] || !$_POST['password'] || !$_POST['user2Id'] || !$_POST['msg'])
+if(!$_POST['username'] || !$_POST['password'] || !$_POST['user2Id'] || !$_POST['msg'] || !$_POST['nonce'])
   die("Error - one of the parameters is not set.");
 
 //check password
@@ -27,8 +27,8 @@ if(!(substr(loginhelper($conn, $_POST['username'], $_POST['password']),0,1) === 
 
 $userId = getUserId($conn, $_POST['username']);
 // prepare, bind and execute
-$stmt = $conn->prepare("INSERT INTO messages (user1, user2, messages) VALUES (?, ?, ?)"); 
-$stmt->bind_param("iis", $userId, $_POST['user2Id'], $_POST['msg']);
+$stmt = $conn->prepare("INSERT INTO messages (user1, user2, messages, nonce) VALUES (?, ?, ?, ?)"); 
+$stmt->bind_param("iiss", $userId, $_POST['user2Id'], $_POST['msg'], $_POST['nonce']);
 $stmt->execute();
 if ($stmt->errno)
   die("Error during the execution of the SQL query");

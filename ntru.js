@@ -77,8 +77,7 @@ function generateNTRUKeys(deckey, callback) {
     w.terminate();
     var privatekey = event.data[0];
     var publickey = event.data[1];
-    var encryptedPrivatekey = AESencrypt(privatekey, deckey); //encrypt the privatekey
-    callback([encryptedPrivatekey, publickey]);
+    callback([privatekey, publickey]);
   };
 }
 

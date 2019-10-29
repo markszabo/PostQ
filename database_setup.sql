@@ -60,6 +60,7 @@ CREATE TABLE `messages` (
   `user1` int(11) NOT NULL,
   `user2` int(11) NOT NULL,
   `messages` text COLLATE latin2_hungarian_ci NOT NULL,
+  `nonce` binary(16) NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin2 COLLATE=latin2_hungarian_ci;
 

@@ -22,7 +22,7 @@ function addFriend() {
       var encaps = NTRUEncapsulate(publicKeyOfFriend);
       var plainkey = encaps[0];
       var symkeyforfriend = encaps[1];
-      var symkeyforme = AESencrypt(plainkey, decryptionkey);
+      var symkeyforme = AESencryptCBC_arr(plainkey, decryptionkey);
 
       $.post("addFriend.php", {
         username: inputEmail, 
