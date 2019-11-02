@@ -22,15 +22,15 @@ if(!(substr(loginhelper($conn, $_POST['username'], $_POST['password']),0,1) === 
   die("Authentication failed");
   
 // prepare, bind and execute
-$stmt = $conn->prepare("SELECT friendrequests.user1, friendrequests.user2, friendrequests.symkey FROM friendrequests, users WHERE friendrequests.user1 = users.id AND users.username = ?");
+$stmt = $conn->prepare("SELECT friendrequests.useridTO, friendrequests.useridFROM, friendrequests.usernameFROM, friendrequests.symkey FROM friendrequests, users WHERE friendrequests.useridTO = users.id AND users.username = ? AND friendrequests.rejected = 0 ORDER BY friendrequests.id DESC");
 $stmt->bind_param("s", $_POST['username']);
 $stmt->execute();
 if ($stmt->errno)
   die("Error during the execution of the SQL query");
 
 //get the result
-$stmt->bind_result($user1, $user2, $symkey);
+$stmt->bind_result($useridTO, $useridFROM, $usernameFROM, $symkey);
 
 while($stmt->fetch())
-  echo $user1 . "," . $user2 . "," . $symkey . "\n";
+  echo $useridTO . "," . $useridFROM . "," . $usernameFROM . "," . $symkey . "\n"; //Problem if usernames allow comma!!! Add verification!
 ?>

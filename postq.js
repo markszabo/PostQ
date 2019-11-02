@@ -19,9 +19,12 @@ function pageLoaded() {
   }
 }
 
-function send() {
+function send(text) {
   msgId++;
   var msg = $('#newmsg').val();
+  if(typeof text === 'string')
+    msg=text;
+
   var msgWithId = msgId.toString() + ";" + msg;
   $('#newmsg').val(''); //cleare the message box
   

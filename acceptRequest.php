@@ -23,7 +23,7 @@ if(!(substr(loginhelper($conn, $_POST['username'], $_POST['password']),0,1) === 
 
 $userId = getUserId($conn, $_POST['username']);
 //delete request
-$stmt = $conn->prepare("DELETE FROM friendrequests WHERE user1 = ? AND user2 = ?");
+$stmt = $conn->prepare("DELETE FROM friendrequests WHERE useridTO = ? AND useridFROM = ?");
 $stmt->bind_param("ii", $userId, $_POST['friendId']);
 $stmt->execute();
 if ($stmt->errno)

@@ -53,8 +53,8 @@ if ($stmt->errno)
   die("Error during the execution of the SQL query - 1");
 
 //add friend's new symkey
-$stmt = $conn->prepare("INSERT INTO friendrequests (user1, user2, symkey) VALUES (?, ?, ?)");
-$stmt->bind_param("iis", $friendId, $userId, $_POST['symkeyforfriend']);
+$stmt = $conn->prepare("INSERT INTO friendrequests (useridTO, useridFROM, usernameFROM, symkey) VALUES (?, ?, ?, ?)");
+$stmt->bind_param("iiss", $friendId, $userId, $_POST['username'], $_POST['symkeyforfriend']);
 $stmt->execute();
 if ($stmt->errno)
   die("Error during the execution of the SQL query - 2");

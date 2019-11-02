@@ -43,8 +43,10 @@ USE `postq`;
 DROP TABLE IF EXISTS `friendrequests`;
 CREATE TABLE `friendrequests` (
   `id` int(11) NOT NULL,
-  `user1` int(11) NOT NULL,
-  `user2` int(11) NOT NULL,
+  `useridTO` int(11) NOT NULL,
+  `useridFROM` int(11) NOT NULL,
+  `usernameFROM` varchar(80) COLLATE latin2_hungarian_ci NOT NULL,
+  `rejected` bit NOT NULL DEFAULT 0,
   `symkey` text COLLATE latin2_hungarian_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin2 COLLATE=latin2_hungarian_ci;
 
@@ -62,6 +64,20 @@ CREATE TABLE `messages` (
   `messages` text COLLATE latin2_hungarian_ci NOT NULL,
   `nonce` binary(16) NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin2 COLLATE=latin2_hungarian_ci;
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `symkeyrequests`
+--
+
+DROP TABLE IF EXISTS `symkeyrequests`;
+CREATE TABLE `symkeyrequests` (
+  `id` int(11) NOT NULL,
+  `useridTO` int(11) NOT NULL,
+  `useridFROM` int(11) NOT NULL,
+  `usernameFROM` varchar(80) COLLATE latin2_hungarian_ci NOT NULL,
+  `symkey` text COLLATE latin2_hungarian_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin2 COLLATE=latin2_hungarian_ci;
 
 -- --------------------------------------------------------
@@ -114,6 +130,12 @@ ALTER TABLE `friendrequests`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `symkeyrequests`
+--
+ALTER TABLE `symkeyrequests`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `messages`
 --
 ALTER TABLE `messages`
@@ -141,6 +163,11 @@ ALTER TABLE `unverified_users`
 -- AUTO_INCREMENT for table `friendrequests`
 --
 ALTER TABLE `friendrequests`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `symkeyrequests`
+--
+ALTER TABLE `symkeyrequests`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `messages`

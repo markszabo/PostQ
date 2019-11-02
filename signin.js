@@ -46,7 +46,6 @@ function signin_from_localStorage(){
         $('#signin').hide();
         $('#main').show();
         privatekey = AESdecryptCBC_txt(data.substr(1), decryptionkey); //login.php returns '1'.privatekey_aes
-        handleFriendRequests();
         generateMenu();
       } else {
         displayLoginAlert("danger",data);
@@ -79,7 +78,6 @@ function signin() {
       displayLoginAlert("danger","Calculating the scrypt hash of the password failed. Try again. Detailed error: " + error.toString());
     } else if (hash) {
       decryptionkey = hash.slice(0,16);
-
       authenticationkey = btoa(String.fromCharCode.apply(null,hash.slice(16,32)));
       $.post("login.php", {	username: inputEmail,	password: authenticationkey },
 
@@ -88,7 +86,7 @@ function signin() {
             $('#signin').hide();
             $('#main').show();
             privatekey = AESdecryptCBC_txt(data.substr(1), decryptionkey); //login.php returns '1'.privatekey_aes
-            handleFriendRequests();
+
             generateMenu();
             if ($('#rememberMe').is(":checked")) { //Option to remeber user saving keys
               localStorage.setItem('local_username',inputEmail);

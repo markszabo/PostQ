@@ -13,9 +13,22 @@
 function showAddNewFriend() {
   clearTimeout(messageUpdateTimer);
   $('#messagesouter').hide();
+  $('#friendRequests').hide();
+  $('#alertNewFriend').empty();
   $('.msgtitle').text('Add new friend');
   $('#addnewfriend').show();
   markSelected("menuAddnewfriend");
+}
+
+function showFriendRequests() {
+  clearTimeout(messageUpdateTimer);
+  $('#messagesouter').hide();
+  $('#addnewfriend').hide();
+  $('.msgtitle').text('Manage friend requests');
+  $('#alertFriendRequests').empty();
+  $('#friendRequests').show();
+  markSelected("menuFriendRequests");
+  handleFriendRequests()
 }
 
 var user2Id;
@@ -24,6 +37,7 @@ var messageUpdateTimer;
 var messageTimeout = 5; //in second
 var msgId;
 var msgIduser2;
+const warnSymkeyExchangeEvery = 20 //messages
 
 function showMessages(username, userid, symkey) {
   clearTimeout(messageUpdateTimer); //otherwise problem with switching between chats
@@ -47,10 +61,13 @@ function showMessages(username, userid, symkey) {
         var msgNonce = messages[i].substring(1, messages[i].indexOf(";"));
         var idAndMsg = messages[i].substring(messages[i].indexOf(";")+1);
         var decIdAndMsg = AESdecryptCTR(idAndMsg, msgSymKey, msgNonce);
+        if(decIdAndMsg.indexOf(";") == -1) //error decoding or outdated symkey
+          continue;
         var decIdAndMsgA = decIdAndMsg.split(";");
         var msg = decIdAndMsgA[1];
         var msgIdi = parseInt(decIdAndMsgA[0]);
-
+        if(msgIdi == 00 && decIdAndMsgA[0].length != 1) //error decoding or outdated symkey
+          continue;
         if(fromTo == '1' && msgIdi > msgId) {
           msgId = msgIdi;
           $('#messages').append('<div class="msgFromMe">' + msg + '</div>');
@@ -66,6 +83,8 @@ function showMessages(username, userid, symkey) {
           }
 
         }
+        if(i != 0 && i % warnSymkeyExchangeEvery == 0)
+          $('#messages').append('<div>Reminder: Consider to change secret code.</div>');
       }
     }
     //if call params were recieved
@@ -80,12 +99,43 @@ function showMessages(username, userid, symkey) {
     }
 
     $('#addnewfriend').hide();
-    $('.msgtitle').text(username);
+    $('#friendRequests').hide();
+    $('.msgtitle').html(username + ' <a href="javascript:changeSymkey(\'' + username + '\', ' + userid + ')"><span class="glyphicon glyphicon-flash" title="Delete all my messages and enforce new secret code"></span></a>');
     $('#messagesouter').show();
     $('#messages').scrollTo("max");
     markSelected("menuMsgs"+userid);
     messageUpdateTimer = setTimeout(function(){showMessages(username, userid, symkey);}, messageTimeout*1000);
   });
+}
+
+function changeSymkey(username, userid) {
+
+  $.post("getPublicKey.php", { user: username },
+    function(data, status){
+      if(data.startsWith("Error")) {
+        displayAlert("#alertMessages","danger","Change symkey failed. " + data);
+      } else { //no error
+        var publicKeyOfFriend = data;
+        var encaps = NTRUEncapsulate(publicKeyOfFriend);
+        var plainkey = encaps[0];
+        var symkeyforfriend = encaps[1];
+        var symkeyforme = AESencryptCBC_arr(plainkey, decryptionkey);
+
+        $.post("initChangeSymkey.php", {username: inputEmail, password: authenticationkey, friend: username, symkeyforme: symkeyforme, symkeyforfriend: symkeyforfriend},
+          function(data, status){
+            if(data == "1") { //success
+              send('I changed secret code. All my previous messages were discarded. Please accept a new generated new secret in "Friend requests" to continue conversation. If you send further messages they can not be read by me.');
+              displayAlert("#alertMessages","success","Symmetric key changed successfully!");
+              showMessages(username, userid, symkeyforme)
+            } else {
+              displayAlert("#alertMessages","danger",data);
+            }
+            generateMenu();
+          }
+        );
+      }
+    }
+  );
 }
 
 function markSelected(id) {
