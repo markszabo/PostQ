@@ -188,12 +188,34 @@ function polyModInverse(poly, modulo) { //polyModInverse(new Polynomial("3+2x^2-
 }
 
 /**
- * Returns a random integer between min (inclusive) and max (inclusive)
- * Using Math.round() would give you a non-uniform distribution!
- * Source: http://stackoverflow.com/a/1527820
+ * Returns a secure random integer between min (inclusive) and max 
+ * (inclusive) using crypto object (uniform distribution). If it is not 
+ * available, uses Math.random (non-uniform distribution)
  */
 function getRandomInt(min, max) {
+  // Error check not needed in this algorithm
+  var n_bytes,
+      randomInt,
+      randomBytes,
+      i;
+  var diff = max - min + 1;
+  if(diff<=256) //just to speed up code for small int
+    n_bytes = 1;
+  else
+    n_bytes = Math.ceil(Math.log10(diff)/Math.log10(256)); //solves for any number of bytes
+  var randomBytes = new Uint8Array(n_bytes);
+  var crypto = self.crypto || self.msCrypto;
+  if (crypto === undefined) { //crypto not available. Fallback to Math.random()
     return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  var max_permitted = Math.floor(Math.pow(256, n_bytes) / diff) * diff - 1;
+  do{
+    crypto.getRandomValues(randomBytes);
+    for (i=0, randomInt=0; i<randomBytes.length; i++) {
+      randomInt += randomBytes[i] * Math.pow(256, i);
+    }
+  }while(randomInt >= max_permitted);
+  return (randomInt % diff) + min;
 }
 
 /**
