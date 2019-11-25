@@ -2,6 +2,8 @@
 
 This repository contains the code of PostQ: a web-based messenger application with end-to-end post-quantum encryption. This was created as a homework for the Applied Cryptography Project Seminar class at [ELTE](http://elte.hu/), Hungary by [Anna Dorottya Simon](https://github.com/annadorottya) and [Márk Szabó](https://github.com/markszabo/).
 
+There are some security issues ([#11](https://github.com/markszabo/PostQ/issues/11), [#12](https://github.com/markszabo/PostQ/issues/12), [#13](https://github.com/markszabo/PostQ/issues/13)) with this project, which are fixed in the [fork of deleterium](https://github.com/deleterium/PostQ/tree/deleterium.info), but that fork doesn't support videochat. You should probably use that one, or apply those fixes to this code if videochat is needed. (In that case please send a PR as well.)
+
 ## Warning
 
 The messaging protocol and the implementation was developed during a university course in 2016 by university students. Neither the protocol nor the implementation went through proper security testing, so using this in production is __highly__ discouraged. Also doing cryptography in JavaScript securely is very hard, and the libraries used here are not meant to be used for secure operations, very likely opening up the entire implementation to all sorts of attacks.
