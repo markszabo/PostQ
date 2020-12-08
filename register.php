@@ -66,7 +66,7 @@ if($use_mail_registration) {
 
 // If not using mail registration, add directly to users table
 $stmt = $conn->prepare("INSERT INTO users (username, password, privatekey, publickey) VALUES (?, ?, ?, ?)");
-$stmt->bind_param("ssss", $_POST['username'], password_hash($_POST['password'], PASSWORD_BCRYPT), $_POST['privatekey'], base64_decode($_POST['publickey']));
+$stmt->bind_param( $_POST['username'], password_hash($_POST['password'], PASSWORD_BCRYPT), $_POST['privatekey'], base64_decode($_POST['publickey']));
 $stmt->execute();
 if($stmt->errno) {
     die("Error during the execution of the SQL query");
